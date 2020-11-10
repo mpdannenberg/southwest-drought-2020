@@ -83,6 +83,7 @@ if nsims > 0
     r2_cal = NaN(nsims, 1); 
     r2_val = NaN(nsims, 1); 
     mdl_ens = cell(nsims, 1);
+    Yall = NaN(nmos*nyrs, nsims);
     nm = nmos * nyrs;
     for i = 1:nsims
         [Xsub, idx] = datasample(Xpcs, nm, 1); % sample data with replacement
@@ -93,11 +94,13 @@ if nsims > 0
         r2_val(i) = corr(y(ia), yhat, 'rows','pairwise')^2;
         r2_cal(i) = mdl.Rsquared.Ordinary;
         mdl_ens{i} = mdl;
+        Yall(:,i) = predict(mdl, Xpcs);
     end
     
     stats.ModelEnsemble = mdl_ens;
     stats.R2_Calibration = r2_cal;
     stats.R2_Validation = r2_val;
+    eval(['stats.',yname,'_All = Yall;']);
 end
 
 % Initialize table with observed and fitted values
@@ -114,6 +117,23 @@ for i = 1:nvars
     yhat = predict(mdl_full, Xpcs(:,1:n));
     T.(strcat(yname,'_',xnames{i})) = (yhat - y0) + ybar;
     y0 = yhat;
+end
+
+% Bootstrapped CIs on anomaly attribution
+if nsims > 0
+    stats.BootSims = NaN(nmos*nyrs, nsims, nvars);
+    Xtemp = zeros(size(X));
+    Xtemp(isnan(X)) = NaN;
+    y0 = zeros(size(ybar,1), nsims);
+    for i = 1:nvars
+        Xtemp(:, i:nvars:((nlags+1)*nvars)) = X(:, i:nvars:((nlags+1)*nvars));
+        Xpcs = Xtemp * coeffs;
+        for j = 1:nsims
+            yhat = predict(stats.ModelEnsemble{j}, Xpcs(:,1:n));
+            stats.BootSims(:, j, i) = yhat - y0(:, j);
+            y0(:, j) = yhat;
+        end
+    end
 end
 
 end
