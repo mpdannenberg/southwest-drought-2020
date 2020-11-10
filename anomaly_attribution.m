@@ -41,11 +41,8 @@ end
 
 % Deseasonalize response variable
 ybar = repmat(nanmean(y, 2), 1, nyrs);
-ystd = repmat(nanstd(y, 0, 2), 1, nyrs);
-%y = (y - ybar) ./ ystd;
 y = (y - ybar);
 ybar = reshape(ybar, [], 1);
-%ystd = reshape(ystd, [], 1);
 y = reshape(y, [], 1);
 
 % Deseasonalize predictor variables
@@ -104,10 +101,6 @@ if nsims > 0
 end
 
 % Initialize table with observed and fitted values
-% T = table(y .* ystd + ybar,...
-%     ybar,...
-%     mdl_full.Fitted .* ystd + ybar,...
-%     'VariableNames',{strcat(yname,'_Obs'),strcat(yname,'_Avg'),strcat(yname,'_All')});
 T = table(y + ybar, ybar, mdl_full.Fitted + ybar, ...
     'VariableNames',{strcat(yname,'_Obs'),strcat(yname,'_Avg'),strcat(yname,'_All')});
 
@@ -116,19 +109,11 @@ Xtemp = zeros(size(X));
 Xtemp(isnan(X)) = NaN;
 y0 = zeros(size(ybar));
 for i = 1:nvars
-%     Xtemp = zeros(size(X));
-%     Xtemp(isnan(X)) = NaN;
     Xtemp(:, i:nvars:((nlags+1)*nvars)) = X(:, i:nvars:((nlags+1)*nvars));
-%     Xtemp = X;
-%     Xtemp(:, i:nvars:((nlags+1)*nvars)) = 0;
-%     Xtemp(isnan(X)) = NaN;
     Xpcs = Xtemp * coeffs;
     yhat = predict(mdl_full, Xpcs(:,1:n));
-    %T.(strcat(yname,'_',xnames{i})) = yhat .* ystd + ybar;
-    %T.(strcat(yname,'_',xnames{i})) = (mdl_full.Fitted - yhat) + ybar;
     T.(strcat(yname,'_',xnames{i})) = (yhat - y0) + ybar;
     y0 = yhat;
-    
 end
 
 end
