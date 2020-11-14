@@ -10,6 +10,8 @@ if nargin > 2 % read in advanced options if user-specified:
     % first fill values in with defaults:
     nlags = 0; % Number of predictor lags to use
     npcs = 0.95; % Variance threshold for PCs (if <1) or number of PCs to use (if integer)
+    method = 'fitlm'; % regression approach
+    modelspec = 'linear'; % terms to include in model
     yname = 'y'; % Name of response variable
     xnames = strcat('X',cellstr(num2str([1:nvars]'))'); % Names of X variables
     nsims = 0; % Number of bootstrap simulations to use for model uncertainty
@@ -23,6 +25,10 @@ if nargin > 2 % read in advanced options if user-specified:
                 nlags = valin;
             case 'npcs'
                 npcs = valin;
+            case 'method'
+                method = valin;
+            case 'modelspec'
+                modelspec = valin;
             case 'yname'
                 yname = valin;
             case 'xnames'
@@ -34,6 +40,8 @@ if nargin > 2 % read in advanced options if user-specified:
 else % otherwise, read in defaults:
     nlags = 0;
     npcs = 0.95;
+    method = 'fitlm'; 
+    modelspec = 'linear';
     yname = 'y';
     strcat('X',cellstr(num2str([1:nvars]'))');
     nsims = 0;
@@ -76,7 +84,15 @@ end
 Xpcs = Xpcs(:, 1:n);
 
 % Fit main model
-mdl_full = fitlm(Xpcs, y); 
+if strcmp(method, 'fitlm')
+    mdl_full = fitlm(Xpcs, y, modelspec); 
+elseif strcmp(method, 'stepwiselm')
+    mdl_full = stepwiselm(Xpcs, y, modelspec, 'Criterion','bic', 'Verbose',0); 
+else
+    disp('"method" not recognized');
+    return
+end
+stats.Model = mdl_full;
 
 % Bootstrapped models
 if nsims > 0
@@ -89,7 +105,8 @@ if nsims > 0
         [Xsub, idx] = datasample(Xpcs, nm, 1); % sample data with replacement
         [~,ia] = setdiff(1:nm, idx); % find observations that were not sampled
 
-        mdl = fitlm(Xsub, y(idx));
+        mdl = fitlm(Xsub, y(idx), ['y ~ ',mdl_full.Formula.LinearPredictor]);
+
         yhat = predict(mdl, Xpcs(ia,:));
         r2_val(i) = corr(y(ia), yhat, 'rows','pairwise')^2;
         r2_cal(i) = mdl.Rsquared.Ordinary;
