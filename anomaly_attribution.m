@@ -117,17 +117,20 @@ if nsims > 0
     stats.ModelEnsemble = mdl_ens;
     stats.R2_Calibration = r2_cal;
     stats.R2_Validation = r2_val;
-    eval(['stats.',yname,'_All = Yall;']);
+    
 end
 
-% Initialize table with observed and fitted values
-T = table(y + ybar, ybar, mdl_full.Fitted + ybar, ...
-    'VariableNames',{strcat(yname,'_Obs'),strcat(yname,'_Avg'),strcat(yname,'_All')});
-
-% Scenario differencing
+% Initialize scenario (all climate variables set at their mean)
 Xtemp = zeros(size(X));
 Xtemp(isnan(X)) = NaN;
-y0 = zeros(size(ybar));
+Xpcs = Xtemp * coeffs;
+y0 = predict(mdl_full, Xpcs(:,1:n));
+
+% Initialize table with observed and fitted values
+T = table(y + ybar, ybar, mdl_full.Fitted + ybar - y0, ...
+    'VariableNames',{strcat(yname,'_Obs'),strcat(yname,'_Avg'),strcat(yname,'_All')});
+
+% Run scenario differencing
 for i = 1:nvars
     Xtemp(:, i:nvars:((nlags+1)*nvars)) = X(:, i:nvars:((nlags+1)*nvars));
     Xpcs = Xtemp * coeffs;
@@ -141,7 +144,14 @@ if nsims > 0
     stats.BootSims = NaN(nmos*nyrs, nsims, nvars);
     Xtemp = zeros(size(X));
     Xtemp(isnan(X)) = NaN;
+    Xpcs = Xtemp * coeffs;
     y0 = zeros(size(ybar,1), nsims);
+    % Initialize scenario (all climate variables set at their mean)
+    for j = 1:nsims
+        y0(:, j) = predict(stats.ModelEnsemble{j}, Xpcs(:,1:n));
+    end
+    eval(['stats.',yname,'_All = Yall - y0;']);
+    % Change one variable at a time and simulate with the model ensemble
     for i = 1:nvars
         Xtemp(:, i:nvars:((nlags+1)*nvars)) = X(:, i:nvars:((nlags+1)*nvars));
         Xpcs = Xtemp * coeffs;
