@@ -6,7 +6,7 @@ nVars = 18;
 varTypes = cell(1, nVars); varTypes(:) = {'double'};
 varNames = {'Year','Month','NEE','GPP','Reco','LE','H','SW_IN','TA',...
     'Tmin','RH','VPD','VPDmax','P','SWC_5cm','SWC_10_15cm','SWC_30cm','SWC_root'};
-sampThresh = 0.75;
+sampThresh = 0.5;
 
 for i = 1:n
     opts = detectImportOptions(fns{i});
