@@ -17,24 +17,29 @@ h.Position = [1 1 6.5 6];
 clr = wesanderson('fantasticfox1');
 ax = tight_subplot(nrows, ncols, 0.02, [0.12 0.05], [0.1 0.05]);
 
-fns = glob('./data/Ameriflux_monthly/US-*.csv');
-n = length(fns);
+sites = {'US-SRG','US-SRM','US-Vcp','US-Wkg','US-Mpj','US-Whs','US-Seg','US-Ses','US-Wjs'};
+n = length(sites);
 
 %% Loop through sites and add to figure
 for i = 1:n
-    
-    T = readtable(fns{i});
+    fn = glob(['./data/Ameriflux_monthly/',sites{i},'*.csv']);
+
+    T = readtable(fn{1});
     gpp = reshape(T.GPP, 12, []);
     par = reshape(T.SW_IN, 12, []);
     sm = reshape(T.SWC_root, 12, []);
     tair = reshape(T.TA, 12, []);
+    tmin = reshape(T.Tmin, 12, []);
     vpd = reshape(T.VPD, 12, []);
+    yrs = unique(T.Year);
     
     X = cat(3, par, sm, tair, vpd);
     y = gpp;
     
     [SRM, SRMstats] = anomaly_attribution(y, X, 'nsims',1000,'nlags',1,...
-        'yname','GPP', 'xnames',{'PAR','SM','Tair','VPD'},'method','stepwiselm', 'modelspec','purequadratic');
+        'yname','GPP', 'xnames',{'PAR','SM','Tair','VPD'},...
+        'method','stepwiselm', 'modelspec','purequadratic',...
+        'trainset',(tmin>0), 'baseyrs',(yrs>=2015 & yrs<=2020));
     % 2020 drought
     idx = T.Year==2020 & T.Month>=7 & T.Month<=10;
     GPP_anom = mean(SRM.GPP_Obs(idx) - SRM.GPP_Avg(idx));
@@ -76,8 +81,15 @@ for i = 1:n
     
     hold off;
     box off;
-    set(gca, 'TickDir','out', 'TickLength',[0.02 0], 'YLim',[-2 0.5],...
+    set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
             'XLim',[0.25 5.75], 'FontSize',7)
+    if i <= 3
+        set(gca,'YLim',[-2 0.5]);
+    elseif i <=6
+        set(gca,'YLim',[-1.5 0.5]);
+    else
+        set(gca,'YLim',[-1 0.25]);
+    end
         
     if i > (nrows-1)*ncols
         set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
@@ -86,9 +98,7 @@ for i = 1:n
         set(gca, 'XTickLabel','')
     end
     
-    site = strsplit(fns{i}, 'US-');
-    site = strsplit(site{2}, '_');
-    ttl = title(['US-', site{1}],'FontSize',10);
+    ttl = title([sites{i}],'FontSize',10);
     ttl.Position(2) = 0.25;
     
     if rem(i, ncols) == 1
@@ -101,6 +111,6 @@ end
 
 %% Save figure
 set(gcf,'PaperPositionMode','auto')
-print('-dtiff','-f1','-r300','./output/gpp-attribution-models-stepwise-quadratic-interactions-wMtB.tif')
+print('-dtiff','-f1','-r300','./output/ameriflux-gpp-attribution-models.tif')
 close all;
 
