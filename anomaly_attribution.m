@@ -9,12 +9,14 @@ function [T, stats] = anomaly_attribution(y,X,varargin)
 if nargin > 2 % read in advanced options if user-specified:
     % first fill values in with defaults:
     nlags = 0; % Number of predictor lags to use
-    npcs = 0.95; % Variance threshold for PCs (if <1) or number of PCs to use (if integer)
+    npcs = 0.95; % Variance threshold for PCs (if <1) or number of PCs to use (if integer)... OR simple model (no transformation) if zero (TBD)
     method = 'fitlm'; % regression approach
     modelspec = 'linear'; % terms to include in model
     yname = 'y'; % Name of response variable
     xnames = strcat('X',cellstr(num2str([1:nvars]'))'); % Names of X variables
     nsims = 0; % Number of bootstrap simulations to use for model uncertainty
+    trainset = true(size(y)); % observations to use for training the model
+    baseyrs = true(1,nyrs); % years to use for baseline
     % then over-write defaults if user-specified:
     Nvararg = length(varargin);
     for i = 1:Nvararg/2
@@ -35,6 +37,8 @@ if nargin > 2 % read in advanced options if user-specified:
                 xnames = valin;
             case 'nsims'
                 nsims = valin;
+            case 'trainset'
+                trainset = valin;
         end
     end
 else % otherwise, read in defaults:
@@ -45,17 +49,20 @@ else % otherwise, read in defaults:
     yname = 'y';
     strcat('X',cellstr(num2str([1:nvars]'))');
     nsims = 0;
+    trainset = true(size(y));
+    baseyrs = true(1,nyrs); 
 end
 
 % Deseasonalize response variable
-ybar = repmat(nanmean(y, 2), 1, nyrs);
+ybar = repmat(nanmean(y(:,baseyrs), 2), 1, nyrs);
 y = (y - ybar);
 ybar = reshape(ybar, [], 1);
 y = reshape(y, [], 1);
+trainset = reshape(trainset, [], 1);
 
 % Deseasonalize predictor variables
-Xbar = repmat(nanmean(X, 2), 1, nyrs, 1);
-Xstd = repmat(nanstd(X, 0, 2), 1, nyrs, 1);
+Xbar = repmat(nanmean(X(:,baseyrs,:), 2), 1, nyrs, 1);
+Xstd = repmat(nanstd(X(:,baseyrs,:), 0, 2), 1, nyrs, 1);
 X = (X - Xbar) ./ Xstd;
 X = reshape(permute(X, [3 1 2]), nvars, [])';
 
@@ -85,14 +92,15 @@ Xpcs = Xpcs(:, 1:n);
 
 % Fit main model
 if strcmp(method, 'fitlm')
-    mdl_full = fitlm(Xpcs, y, modelspec); 
+    mdl_full = fitlm(Xpcs(trainset,:), y(trainset), modelspec); 
 elseif strcmp(method, 'stepwiselm')
-    mdl_full = stepwiselm(Xpcs, y, modelspec, 'Criterion','bic', 'Verbose',0); 
+    mdl_full = stepwiselm(Xpcs(trainset,:), y(trainset), modelspec, 'Criterion','bic', 'Verbose',0); 
 else
     disp('"method" not recognized');
     return
 end
 stats.Model = mdl_full;
+y_full = predict(mdl_full, Xpcs); y_full(~trainset) = NaN;
 
 % Bootstrapped models
 if nsims > 0
@@ -100,15 +108,17 @@ if nsims > 0
     r2_val = NaN(nsims, 1); 
     mdl_ens = cell(nsims, 1);
     Yall = NaN(nmos*nyrs, nsims);
-    nm = nmos * nyrs;
+    nm = sum(trainset);
+    ysub = y(trainset);
+    Xsub = Xpcs(trainset,:);
     for i = 1:nsims
-        [Xsub, idx] = datasample(Xpcs, nm, 1); % sample data with replacement
+        [Xsamp, idx] = datasample(Xsub, nm, 1); % sample data with replacement
         [~,ia] = setdiff(1:nm, idx); % find observations that were not sampled
 
-        mdl = fitlm(Xsub, y(idx), ['y ~ ',mdl_full.Formula.LinearPredictor]);
+        mdl = fitlm(Xsamp, ysub(idx), ['y ~ ',mdl_full.Formula.LinearPredictor]);
 
-        yhat = predict(mdl, Xpcs(ia,:));
-        r2_val(i) = corr(y(ia), yhat, 'rows','pairwise')^2;
+        yhat = predict(mdl, Xsub(ia,:));
+        r2_val(i) = corr(ysub(ia), yhat, 'rows','pairwise')^2;
         r2_cal(i) = mdl.Rsquared.Ordinary;
         mdl_ens{i} = mdl;
         Yall(:,i) = predict(mdl, Xpcs);
@@ -127,14 +137,14 @@ Xpcs = Xtemp * coeffs;
 y0 = predict(mdl_full, Xpcs(:,1:n));
 
 % Initialize table with observed and fitted values
-T = table(y + ybar, ybar, mdl_full.Fitted + ybar - y0, ...
+T = table(y + ybar, ybar, y_full + ybar - y0, ...
     'VariableNames',{strcat(yname,'_Obs'),strcat(yname,'_Avg'),strcat(yname,'_All')});
 
 % Run scenario differencing
 for i = 1:nvars
     Xtemp(:, i:nvars:((nlags+1)*nvars)) = X(:, i:nvars:((nlags+1)*nvars));
     Xpcs = Xtemp * coeffs;
-    yhat = predict(mdl_full, Xpcs(:,1:n));
+    yhat = predict(mdl_full, Xpcs(:,1:n)); yhat(~trainset) = NaN;
     T.(strcat(yname,'_',xnames{i})) = (yhat - y0) + ybar;
     y0 = yhat;
 end
@@ -156,7 +166,7 @@ if nsims > 0
         Xtemp(:, i:nvars:((nlags+1)*nvars)) = X(:, i:nvars:((nlags+1)*nvars));
         Xpcs = Xtemp * coeffs;
         for j = 1:nsims
-            yhat = predict(stats.ModelEnsemble{j}, Xpcs(:,1:n));
+            yhat = predict(stats.ModelEnsemble{j}, Xpcs(:,1:n)); yhat(~trainset) = NaN;
             stats.BootSims(:, j, i) = yhat - y0(:, j);
             y0(:, j) = yhat;
         end
