@@ -39,7 +39,7 @@ for i = 1:n
     [SRM, SRMstats] = anomaly_attribution(y, X, 'nsims',1000,'nlags',1,...
         'yname','GPP', 'xnames',{'PAR','SM','Tair','VPD'},...
         'method','stepwiselm', 'modelspec','purequadratic',...
-        'trainset',(tmin>0), 'baseyrs',(yrs>=2015 & yrs<=2020));
+        'trainset',(tair>0), 'baseyrs',(yrs>=2015 & yrs<=2020));
     % 2020 drought
     idx = T.Year==2020 & T.Month>=7 & T.Month<=10;
     GPP_anom = mean(SRM.GPP_Obs(idx) - SRM.GPP_Avg(idx));
@@ -85,10 +85,19 @@ for i = 1:n
             'XLim',[0.25 5.75], 'FontSize',7)
     if i <= 3
         set(gca,'YLim',[-2 0.5]);
+        ttl = title([sites{i}],'FontSize',10);
+        ttl.Position(2) = 0.25;
+        
     elseif i <=6
         set(gca,'YLim',[-1.5 0.5]);
+        ttl = title([sites{i}],'FontSize',10);
+        ttl.Position(2) = 0.25;
+        
     else
         set(gca,'YLim',[-1 0.25]);
+        ttl = title([sites{i}],'FontSize',10);
+        ttl.Position(2) = 0.125;
+    
     end
         
     if i > (nrows-1)*ncols
@@ -98,8 +107,6 @@ for i = 1:n
         set(gca, 'XTickLabel','')
     end
     
-    ttl = title([sites{i}],'FontSize',10);
-    ttl.Position(2) = 0.25;
     
     if rem(i, ncols) == 1
         ylabel('Mean GPP anomaly (g C m^{-2} day^{-1})', 'FontSize',7)
@@ -111,6 +118,6 @@ end
 
 %% Save figure
 set(gcf,'PaperPositionMode','auto')
-print('-dtiff','-f1','-r300','./output/ameriflux-gpp-attribution-models.tif')
+print('-dpng','-f1','-r300','./output/ameriflux-gpp-attribution-models.png')
 close all;
 
