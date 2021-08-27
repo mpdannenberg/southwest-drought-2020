@@ -2,6 +2,7 @@
 
 %% Read in CSIF grid
 load ./output/csif_gridded_anomaly_attribution;
+CSIF_obs(isnan(CSIF_all)) = NaN; % need to compare apples-to-apples
 latlim = [28 49];
 lonlim = [-125 -100];
 

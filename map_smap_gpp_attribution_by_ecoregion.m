@@ -2,6 +2,7 @@
 
 %% Read in SMAP grid
 load ./output/smap_gridded_anomaly_attribution;
+GPP_obs(isnan(GPP_all)) = NaN; % need to compare apples-to-apples
 latlim = [28 49];
 lonlim = [-125 -100];
 
