@@ -20,6 +20,10 @@ ax = tight_subplot(nrows, ncols, 0.02, [0.12 0.05], [0.1 0.05]);
 sites = {'US-SRG','US-SRM','US-Vcp','US-Wkg','US-Mpj','US-Whs','US-Seg','US-Ses','US-Wjs'};
 n = length(sites);
 
+Tstats = table('Size',[9 7], 'VariableTypes',{'string','string','string','string','string','string','string'},...
+    'VariableNames',{'Site','dGPP_SMAP','dGPP_All','dGPP_PAR','dGPP_SM','dGPP_Tair','dGPP_VPD'});
+Tstats.Site = sites';
+
 %% Loop through sites and add to figure
 for i = 1:n
     fn = glob(['./data/Ameriflux_monthly/',sites{i},'*.csv']);
@@ -59,25 +63,32 @@ for i = 1:n
     bar(4, GPP_tair, 'FaceColor',clr(1,:), 'EdgeColor',clr(1,:).^2, 'LineWidth',1.5);
     bar(5, GPP_vpd, 'FaceColor',clr(2,:), 'EdgeColor',clr(2,:).^2, 'LineWidth',1.5);
     
+    Tstats.dGPP_SMAP(i) = GPP_anom;
+    
     ens = mean(SRMstats.GPP_All(idx, :));
     ci = quantile(ens, [0.025 0.975]);
     plot([1 1], [ci(1) ci(2)], '-', 'Color',clr(5,:).^2, 'LineWidth',1.5)
+    Tstats.dGPP_All(i) = sprintf('%.2f [%.2f, %.2f]', GPP_all, ci(1), ci(2)); 
     
     ens = mean(SRMstats.BootSims(idx, :, 1));
     ci = quantile(ens, [0.025 0.975]);
     plot([2 2], [ci(1) ci(2)], '-', 'Color',clr(4,:).^2, 'LineWidth',1.5)
+    Tstats.dGPP_PAR(i) = sprintf('%.2f [%.2f, %.2f]', GPP_par, ci(1), ci(2)); 
     
     ens = mean(SRMstats.BootSims(idx, :, 2));
     ci = quantile(ens, [0.025 0.975]);
     plot([3 3], [ci(1) ci(2)], '-', 'Color',clr(3,:).^2, 'LineWidth',1.5)
+    Tstats.dGPP_SM(i) = sprintf('%.2f [%.2f, %.2f]', GPP_sm, ci(1), ci(2)); 
     
     ens = mean(SRMstats.BootSims(idx, :, 3));
     ci = quantile(ens, [0.025 0.975]);
     plot([4 4], [ci(1) ci(2)], '-', 'Color',clr(1,:).^2, 'LineWidth',1.5)
+    Tstats.dGPP_Tair(i) = sprintf('%.2f [%.2f, %.2f]', GPP_tair, ci(1), ci(2)); 
     
     ens = mean(SRMstats.BootSims(idx, :, 4));
     ci = quantile(ens, [0.025 0.975]);
     plot([5 5], [ci(1) ci(2)], '-', 'Color',clr(2,:).^2, 'LineWidth',1.5)
+    Tstats.dGPP_VPD(i) = sprintf('%.2f [%.2f, %.2f]', GPP_vpd, ci(1), ci(2)); 
     
     hold off;
     box off;
@@ -119,5 +130,9 @@ end
 %% Save figure
 set(gcf,'PaperPositionMode','auto')
 print('-dpng','-f1','-r300','./output/ameriflux-gpp-attribution-models.png')
+print('-dtiff','-f1','-r300','./output/ameriflux-gpp-attribution-models.tif')
 close all;
+
+%% Save table
+writetable(Tstats, './output/ameriflux_gpp_attribution.xlsx');
 
