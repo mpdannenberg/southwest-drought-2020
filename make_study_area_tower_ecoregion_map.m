@@ -11,9 +11,8 @@ lon = double(lon);
 states = shaperead('usastatehi','UseGeoCoords',true);
 
 %% Read in land cover data
-load ./data/mcd12c1.mat;
-lc = {'Forest','Shrubland','Savanna','Grassland','Crop (west)','Crop (east)'};
-biome(biome==5 & repmat(lon',length(lat),1)>-110) = 6;
+load ./data/rangeland.mat;
+lc = {'Forest','Shrubland','Savanna','Annual','Perennial','Crop (NW)','Crop (SW)','Crop (plains)'};
 
 %% Add EcoRegions 
 ecoL3 = shaperead('D:\Data_Analysis\EcoRegions\NA_CEC_Eco_Level3_GEO.shp', 'UseGeoCoords',true);
@@ -57,9 +56,8 @@ end
 eco_bounds(isnan(GPP_obs)) = 0;
 
 %% Exclude water and LC outside ecoregion bounds
-biome(igbp==8) = 1;
-biome(biome==0) = NaN;
-biome(isnan(eco_bounds) | eco_bounds==0) = NaN;
+rangeland(rangeland==0) = NaN;
+rangeland(isnan(eco_bounds) | eco_bounds==0) = NaN;
 
 %% make map with ecoregions and flux towers... need to work on this more
 h = figure('Color','w');
@@ -70,9 +68,11 @@ clr = wesanderson('fantasticfox1');
 clr2 = [clr(3,:).^3
     clr(1,:).^3
     clr(3,:)
-    clr(1,:)
     clr(5,:)
-    clr(2,:)];
+    clr(1,:)
+    clr(4,:)
+    sqrt(clr(2,:))
+    clr(2,:).^2];
 
 eco_bounds(eco_bounds==0) = NaN;
 axesm('lambert','MapLatLimit',latlim,'MapLonLimit',lonlim,'grid',...
@@ -83,8 +83,8 @@ axesm('lambert','MapLatLimit',latlim,'MapLonLimit',lonlim,'grid',...
         'FontSize',8);
 axis off;
 axis image;
-surfm(lat, lon, biome)
-caxis([0.5 6.5])
+surfm(lat, lon, rangeland)
+caxis([0.5 8.5])
 colormap(gca, clr2);
 geoshow(states,'FaceColor','none','EdgeColor',[0.3 0.3 0.3])
 eco_bounds(isnan(eco_bounds)) = 0;
@@ -96,7 +96,7 @@ ax.Position(2) = 0.08;
 cb = colorbar('southoutside');
 cb.Position = [0.03    0.04    0.85    0.03];
 cb.TickLabels = lc;
-cb.FontSize = 9;
+cb.FontSize = 8;
 cb.TickLength = 0;
 
 % bounding box
@@ -131,9 +131,9 @@ axis off;
 axis image;
 flat = [34.4385     (31.8214 + 0.05)    (31.789379 - 0.05)   (34.3349 - 0.05)   (34.3623 + 0.1)    35.8624     (31.7438 + 0.05)    34.4255     (31.7365 - 0.05)];
 flon = [-106.2377   (-110.8661 - 0.05)  (-110.827675 + 0.05) (-106.7442 - 0.05) (-106.702 + 0.05)   -106.5974   (-110.0522 - 0.05)  -105.8615   (-109.9419 + 0.05)];
-figbp = [1 1 4 2 4 1 2 3 4];
+figbp = [1 1 5 2 5 1 2 3 5];
 scatterm(flat, flon, 40, figbp, 'filled', 'Marker','^', 'MarkerEdgeColor','k')
-caxis(gca, [0.5 6.5])
+caxis(gca, [0.5 8.5])
 colormap(gca, clr2);
 textm(34.55, -106.2377, 'Mpj', 'HorizontalAlignment','center',...
     'VerticalAlignment','bottom', 'FontSize',9, 'FontWeight','bold');

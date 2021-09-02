@@ -23,11 +23,8 @@ GPP_tair_high = quantile(GPP_tair_ens, 0.975, 3);
 GPP_vpd_high = quantile(GPP_vpd_ens, 0.975, 3);
 
 %% Read in land cover data
-load ./data/mcd12c1.mat;
-lc = {'Forest','Shrubland','Savanna','Grassland','Cropland (west)','Cropland (east)'};
-biome(biome==5 & repmat(lon',length(lat),1)>-110) = 6;
-biome(igbp==8) = 1;
-biome(biome==0) = NaN;
+load ./data/rangeland.mat;
+lc = {'Forest','Shrubland','Savanna','Annual','Perennial','Crop (NW)','Crop (SW)','Crop (plains)'};
 
 %% Add EcoRegions 
 ecoL3 = shaperead('D:\Data_Analysis\EcoRegions\NA_CEC_Eco_Level3_GEO.shp', 'UseGeoCoords',true);
@@ -61,14 +58,17 @@ ecos = unique(ecoL2(~isnan(ecoL2)));
 idx = ismember(ecoL2_code, ecos);
 ecoL3 = ecoL3(idx);
 
+%% Exclude water and LC outside ecoregion bounds
+rangeland(rangeland==0) = NaN;
+
 %% Add bar plots by land cover
-nrows = 2;
+nrows = 3;
 ncols = 3;
 
 h = figure('Color','w');
 h.Units = 'inches';
-h.Position = [1 1 6.5 4];
-ax = tight_subplot(nrows, ncols, [0.05 0.02], [0.12 0.05], [0.1 0.05]);
+h.Position = [1 1 6.5 5.5];
+ax = tight_subplot(nrows, ncols, [0.05 0.02], [0.08 0.05], [0.1 0.05]);
 
 clr = wesanderson('fantasticfox1');
 
@@ -76,51 +76,50 @@ for i = 1:length(lc)
     
     axes(ax(i))
     
-    plot([0 6],[nanmean(GPP_obs(biome==i & ~isnan(ecoL2))) nanmean(GPP_obs(biome==i & ~isnan(ecoL2)))], 'k-', 'LineWidth',2)
-    if i ~= 5
-        text(4, nanmean(GPP_obs(biome==i & ~isnan(ecoL2))), 'observed','FontSize',8,'VerticalAlignment','bottom')
+    plot([0 6],[nanmean(GPP_obs(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_obs(rangeland==i & ~isnan(ecoL2)))], 'k-', 'LineWidth',2)
+    if i ~= 4 & i ~= 7
+        text(5.75, nanmean(GPP_obs(rangeland==i & ~isnan(ecoL2))), 'SMAP L4C','FontSize',8,'VerticalAlignment','bottom', 'HorizontalAlignment','right')
     else
-        text(4, nanmean(GPP_obs(biome==i & ~isnan(ecoL2))), 'observed','FontSize',8,'VerticalAlignment','top')
+        text(5.75, nanmean(GPP_obs(rangeland==i & ~isnan(ecoL2))), 'SMAP L4C','FontSize',8,'VerticalAlignment','top', 'HorizontalAlignment','right')
     end
     hold on;
-    bar(1, nanmean(GPP_all(biome==i & ~isnan(ecoL2))), 'FaceColor',clr(5,:), 'EdgeColor',clr(5,:).^2, 'LineWidth',1.5);
-    bar(2, nanmean(GPP_par(biome==i & ~isnan(ecoL2))), 'FaceColor',sqrt(clr(4,:)), 'EdgeColor',clr(4,:).^2, 'LineWidth',1.5);
-    bar(3, nanmean(GPP_sm(biome==i & ~isnan(ecoL2))), 'FaceColor',clr(3,:), 'EdgeColor',clr(3,:).^2, 'LineWidth',1.5);
-    bar(4, nanmean(GPP_tair(biome==i & ~isnan(ecoL2))), 'FaceColor',clr(1,:), 'EdgeColor',clr(1,:).^2, 'LineWidth',1.5);
-    bar(5, nanmean(GPP_vpd(biome==i & ~isnan(ecoL2))), 'FaceColor',clr(2,:), 'EdgeColor',clr(2,:).^2, 'LineWidth',1.5);
-    plot([1 1], [nanmean(GPP_all_low(biome==i & ~isnan(ecoL2))) nanmean(GPP_all_high(biome==i & ~isnan(ecoL2)))], '-', 'Color',clr(5,:).^2, 'LineWidth',1.5);
-    plot([2 2], [nanmean(GPP_par_low(biome==i & ~isnan(ecoL2))) nanmean(GPP_par_high(biome==i & ~isnan(ecoL2)))], '-', 'Color',clr(4,:).^2, 'LineWidth',1.5);
-    plot([3 3], [nanmean(GPP_sm_low(biome==i & ~isnan(ecoL2))) nanmean(GPP_sm_high(biome==i & ~isnan(ecoL2)))], '-', 'Color',clr(3,:).^2, 'LineWidth',1.5);
-    plot([4 4], [nanmean(GPP_tair_low(biome==i & ~isnan(ecoL2))) nanmean(GPP_tair_high(biome==i & ~isnan(ecoL2)))], '-', 'Color',clr(1,:).^2, 'LineWidth',1.5);
-    plot([5 5], [nanmean(GPP_vpd_low(biome==i & ~isnan(ecoL2))) nanmean(GPP_vpd_high(biome==i & ~isnan(ecoL2)))], '-', 'Color',clr(2,:).^2, 'LineWidth',1.5);
+    bar(1, nanmean(GPP_all(rangeland==i & ~isnan(ecoL2))), 'FaceColor',clr(5,:), 'EdgeColor',clr(5,:).^2, 'LineWidth',1.5);
+    bar(2, nanmean(GPP_par(rangeland==i & ~isnan(ecoL2))), 'FaceColor',sqrt(clr(4,:)), 'EdgeColor',clr(4,:).^2, 'LineWidth',1.5);
+    bar(3, nanmean(GPP_sm(rangeland==i & ~isnan(ecoL2))), 'FaceColor',clr(3,:), 'EdgeColor',clr(3,:).^2, 'LineWidth',1.5);
+    bar(4, nanmean(GPP_tair(rangeland==i & ~isnan(ecoL2))), 'FaceColor',clr(1,:), 'EdgeColor',clr(1,:).^2, 'LineWidth',1.5);
+    bar(5, nanmean(GPP_vpd(rangeland==i & ~isnan(ecoL2))), 'FaceColor',clr(2,:), 'EdgeColor',clr(2,:).^2, 'LineWidth',1.5);
+    plot([1 1], [nanmean(GPP_all_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_all_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(5,:).^2, 'LineWidth',1.5);
+    plot([2 2], [nanmean(GPP_par_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_par_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(4,:).^2, 'LineWidth',1.5);
+    plot([3 3], [nanmean(GPP_sm_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_sm_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(3,:).^2, 'LineWidth',1.5);
+    plot([4 4], [nanmean(GPP_tair_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_tair_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(1,:).^2, 'LineWidth',1.5);
+    plot([5 5], [nanmean(GPP_vpd_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_vpd_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(2,:).^2, 'LineWidth',1.5);
     hold off;
     box off;
     set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
-            'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.75 0.2])
+            'XLim',[0.25 5.75], 'FontSize',9, 'YLim',[-0.75 0.2])
         
     if i > (nrows-1)*ncols
-        set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
+        set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'},'FontSize',9)
         xtickangle(-20)
     else
         set(gca, 'XTickLabel','')
     end
     
-    if rem(i, ncols) == 1
-        ylabel('Mean GPP anomaly (g C m^{-2} day^{-1})', 'FontSize',7)
+    if i==4
+        ylabel('Mean GPP anomaly (g C m^{-2} day^{-1})', 'FontSize',10)
+    elseif rem(i, ncols) == 1
+        ylabel('', 'FontSize',7)
     else
         set(gca, 'YTickLabel','')
     end
     
-    ttl = title(lc{i}, 'FontSize',10);
-    ttl.Position(2) = 0.15;
-    
-    text(0.5, 0.2, alphabet(i), 'FontSize',11, 'FontWeight','bold');
+    text(0.5, 0.2, [alphabet(i),') ',lc{i}], 'FontSize',11, 'FontWeight','bold');
     
 end
 
-% axes(ax(6))
-% box off;
-% set(gca, 'YColor','w', 'XColor','w');
+axes(ax(9))
+box off;
+set(gca, 'YColor','w', 'XColor','w');
 
 set(gcf,'PaperPositionMode','auto')
 print('-dpng','-f1','-r300','./output/smap-gpp-lc-attribution.png')
