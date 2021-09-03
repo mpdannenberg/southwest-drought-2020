@@ -37,44 +37,52 @@ for i = 1:n
             % NEE
             w = 1 - Tsub.NEE_fqc/3;
             nm = ~isnan(Tsub.NEE_f);
-            Tmonthly.NEE(idx) = sum(Tsub.NEE_f(nm) .* w(nm)) ./ sum(w(nm));
+%             Tmonthly.NEE(idx) = sum(Tsub.NEE_f(nm) .* w(nm)) ./ sum(w(nm));
+            Tmonthly.NEE(idx) = nanmean(Tsub.NEE_f);
             if sum(nm) < sampThresh*length(nm); Tmonthly.NEE(idx) = NaN; end
             
             % GPP
             w = 1 - Tsub.GPP_fqc/3;
             nm = ~isnan(Tsub.GPP_f);
-            Tmonthly.GPP(idx) = sum(Tsub.GPP_f(nm) .* w(nm)) ./ sum(w(nm));
+%             Tmonthly.GPP(idx) = sum(Tsub.GPP_f(nm) .* w(nm)) ./ sum(w(nm));
+            Tmonthly.GPP(idx) = nanmean(Tsub.GPP_f);
             if sum(nm) < sampThresh*length(nm); Tmonthly.GPP(idx) = NaN; end
             
             % Reco
             w = 1 - Tsub.NEE_fqc/3;
             nm = ~isnan(Tsub.Reco_f);
-            Tmonthly.Reco(idx) = sum(Tsub.Reco_f(nm) .* w(nm)) ./ sum(w(nm));
+%             Tmonthly.Reco(idx) = sum(Tsub.Reco_f(nm) .* w(nm)) ./ sum(w(nm));
+            Tmonthly.Reco(idx) = nanmean(Tsub.Reco_f);
             if sum(nm) < sampThresh*length(nm); Tmonthly.Reco(idx) = NaN; end
             
             % LE
             w = 1 - Tsub.LE_fqc/3;
             nm = ~isnan(Tsub.LE_f);
-            Tmonthly.LE(idx) = sum(Tsub.LE_f(nm) .* w(nm)) ./ sum(w(nm));
+%             Tmonthly.LE(idx) = sum(Tsub.LE_f(nm) .* w(nm)) ./ sum(w(nm));
+            Tmonthly.LE(idx) = nanmean(Tsub.LE_f);
             if sum(nm) < sampThresh*length(nm); Tmonthly.LE(idx) = NaN; end
             
             % H
             w = 1 - Tsub.H_fqc/3;
             nm = ~isnan(Tsub.H_f);
-            Tmonthly.H(idx) = sum(Tsub.H_f(nm) .* w(nm)) ./ sum(w(nm));
+%             Tmonthly.H(idx) = sum(Tsub.H_f(nm) .* w(nm)) ./ sum(w(nm));
+            Tmonthly.H(idx) = nanmean(Tsub.H_f);
             if sum(nm) < sampThresh*length(nm); Tmonthly.H(idx) = NaN; end
             
             % SW_IN
             w = 1 - Tsub.Rg_fqc/3;
             nm = ~isnan(Tsub.Rg_f);
-            Tmonthly.SW_IN(idx) = sum(Tsub.Rg_f(nm) .* w(nm)) ./ sum(w(nm));
+%             Tmonthly.SW_IN(idx) = sum(Tsub.Rg_f(nm) .* w(nm)) ./ sum(w(nm));
+            Tmonthly.SW_IN(idx) = nanmean(Tsub.Rg_f);
             if sum(nm) < sampThresh*length(nm); Tmonthly.SW_IN(idx) = NaN; end
             
             % TA & Tmin
             w = 1 - Tsub.Tair_fqc/3;
             nm = ~isnan(Tsub.Tair_f);
-            Tmonthly.TA(idx) = sum(Tsub.Tair_f(nm) .* w(nm)) ./ sum(w(nm));
-            Tmonthly.Tmin(idx) = sum(Tsub.Tmin_f(nm) .* w(nm)) ./ sum(w(nm));
+%             Tmonthly.TA(idx) = sum(Tsub.Tair_f(nm) .* w(nm)) ./ sum(w(nm));
+%             Tmonthly.Tmin(idx) = sum(Tsub.Tmin_f(nm) .* w(nm)) ./ sum(w(nm));
+            Tmonthly.TA(idx) = nanmean(Tsub.Tair_f);
+            Tmonthly.Tmin(idx) = nanmean(Tsub.Tmin_f);
             if sum(nm) < sampThresh*length(nm)
                 Tmonthly.TA(idx) = NaN; 
                 Tmonthly.Tmin(idx) = NaN;
@@ -88,8 +96,10 @@ for i = 1:n
             % VPD & VPDmax
             w = 1 - Tsub.VPD_fqc/3;
             nm = ~isnan(Tsub.VPD_f);
-            Tmonthly.VPD(idx) = sum(Tsub.VPD_f(nm) .* w(nm)) ./ sum(w(nm));
-            Tmonthly.VPDmax(idx) = sum(Tsub.VPDmax_f(nm) .* w(nm)) ./ sum(w(nm));
+%             Tmonthly.VPD(idx) = sum(Tsub.VPD_f(nm) .* w(nm)) ./ sum(w(nm));
+%             Tmonthly.VPDmax(idx) = sum(Tsub.VPDmax_f(nm) .* w(nm)) ./ sum(w(nm));
+            Tmonthly.VPD(idx) = nanmean(Tsub.VPD_f);
+            Tmonthly.VPDmax(idx) = nanmean(Tsub.VPDmax_f);
             if sum(nm) < sampThresh*length(nm)
                 Tmonthly.VPD(idx) = NaN; 
                 Tmonthly.VPDmax(idx) = NaN; 
