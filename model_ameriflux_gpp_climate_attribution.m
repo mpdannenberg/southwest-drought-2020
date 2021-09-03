@@ -55,7 +55,7 @@ for i = 1:n
     
     axes(ax(i))
     plot([0 6],[GPP_anom GPP_anom], 'k-', 'LineWidth',2)
-    text(4, GPP_anom, 'observed','FontSize',7,'VerticalAlignment','top')
+    text(5.75, GPP_anom, 'observed','FontSize',7,'VerticalAlignment','top', 'HorizontalAlignment','right')
     hold on;
     bar(1, GPP_all, 'FaceColor',clr(5,:), 'EdgeColor',clr(5,:).^2, 'LineWidth',1.5);
     bar(2, GPP_par, 'FaceColor',sqrt(clr(4,:)), 'EdgeColor',clr(4,:).^2, 'LineWidth',1.5);
