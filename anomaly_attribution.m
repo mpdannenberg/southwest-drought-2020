@@ -39,6 +39,8 @@ if nargin > 2 % read in advanced options if user-specified:
                 nsims = valin;
             case 'trainset'
                 trainset = valin;
+            case 'baseyrs'
+                baseyrs = valin;
         end
     end
 else % otherwise, read in defaults:
