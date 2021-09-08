@@ -8,19 +8,20 @@
     % 3) way to run a "simple" version based on the raw predictor variables
     % (untransformed, no lags, simple OLS)
 
-nrows = 3;
-ncols = 3;
+alphabet = 'abcdefghijklmnopqrstuvwxyz';
+nrows = 5;
+ncols = 2;
 
 h = figure('Color','w');
 h.Units = 'inches';
-h.Position = [1 1 6.5 6];
+h.Position = [1 1 4.5 7.5];
 clr = wesanderson('fantasticfox1');
-ax = tight_subplot(nrows, ncols, 0.02, [0.12 0.05], [0.1 0.05]);
+ax = tight_subplot(nrows, ncols, 0.02, [0.05 0.03], [0.12 0.05]);
 
-sites = {'US-SRG','US-SRM','US-Vcp','US-Wkg','US-Mpj','US-Whs','US-Seg','US-Ses','US-Wjs'};
+sites = {'US-SRG','US-SRM','US-Wkg','US-Whs','US-Mpj','US-Seg','US-Wjs','US-Ses','US-Ton','US-Var'};
 n = length(sites);
 
-Tstats = table('Size',[9 7], 'VariableTypes',{'string','string','string','string','string','string','string'},...
+Tstats = table('Size',[10 7], 'VariableTypes',{'string','string','string','string','string','string','string'},...
     'VariableNames',{'Site','dGPP_SMAP','dGPP_All','dGPP_PAR','dGPP_SM','dGPP_Tair','dGPP_VPD'});
 Tstats.Site = sites';
 
@@ -43,7 +44,7 @@ for i = 1:n
     [SRM, SRMstats] = anomaly_attribution(y, X, 'nsims',1000,'nlags',1,...
         'yname','GPP', 'xnames',{'PAR','SM','Tair','VPD'},...
         'method','stepwiselm', 'modelspec','purequadratic',...
-        'trainset',(tair>0), 'baseyrs',(yrs>=2015 & yrs<=2020));
+        'trainset',(tair>0), 'baseyrs',(yrs>=2015 & yrs<=2019));
     % 2020 drought
     idx = T.Year==2020 & T.Month>=7 & T.Month<=10;
     GPP_anom = mean(SRM.GPP_Obs(idx) - SRM.GPP_Avg(idx));
@@ -94,21 +95,31 @@ for i = 1:n
     box off;
     set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
             'XLim',[0.25 5.75], 'FontSize',7)
-    if i <= 3
+    if i <= 2
+        set(gca,'YLim',[-2.5 0.5]);
+        ylim = get(gca, 'YLim');
+        text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
+        
+    elseif i <=4
         set(gca,'YLim',[-2 0.5]);
-        ttl = title([sites{i}],'FontSize',10);
-        ttl.Position(2) = 0.25;
+        ylim = get(gca, 'YLim');
+        text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
         
     elseif i <=6
-        set(gca,'YLim',[-1.5 0.5]);
-        ttl = title([sites{i}],'FontSize',10);
-        ttl.Position(2) = 0.25;
+        set(gca,'YLim',[-1 0.5]);
+        ylim = get(gca, 'YLim');
+        text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
+        
+    elseif i >=9
+        set(gca,'YLim',[-0.75 0.75]);
+        ylim = get(gca, 'YLim');
+        text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
         
     else
-        set(gca,'YLim',[-1 0.25]);
-        ttl = title([sites{i}],'FontSize',10);
-        ttl.Position(2) = 0.125;
-    
+        set(gca,'YLim',[-0.5 0.25]);
+        ylim = get(gca, 'YLim');
+        text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
+        
     end
         
     if i > (nrows-1)*ncols
@@ -119,10 +130,12 @@ for i = 1:n
     end
     
     
-    if rem(i, ncols) == 1
-        ylabel('Mean GPP anomaly (g C m^{-2} day^{-1})', 'FontSize',7)
-    else
+    if rem(i, ncols) ~= 1
         set(gca, 'YTickLabel','')
+    end
+    
+    if ceil(i/2) == 3 & rem(i, ncols) == 1
+        ylabel('Mean GPP anomaly (g C m^{-2} day^{-1})', 'FontSize',10)
     end
     
 end
