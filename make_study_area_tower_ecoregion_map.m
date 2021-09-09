@@ -45,6 +45,7 @@ ecoL2(ecoL2 == 9.3) = NaN;
 ecos = unique(ecoL2(~isnan(ecoL2)));
 idx = ismember(ecoL2_code, ecos);
 ecoL3 = ecoL3(idx);
+clear ecoL2_code;
 
 %% Get boundaries of ecoregions
 eco_bounds = zeros(size(ecoL2));
@@ -54,6 +55,9 @@ for i = 1:length(ecos)
     
 end
 eco_bounds(isnan(GPP_obs)) = 0;
+
+%% Save ecoregion boundaries
+save('./data/ecoregions.mat', 'eco_bounds','ecoL2','ecos','ecoL3','lat','lon');
 
 %% Exclude water and LC outside ecoregion bounds
 rangeland(rangeland==0) = NaN;
