@@ -25,7 +25,7 @@ CSIF_vpd_high = quantile(CSIF_vpd_ens, 0.975, 3);
 
 %% Add EcoRegions 
 load ./data/ecoregions.mat;
-eco_bounds(isnan(CSIF_obs)) = 0;
+eco_bounds(isnan(CSIF_obs) | isnan(eco_bounds)) = 0; 
 
 %% Map
 clr = wesanderson('fantasticfox1');
@@ -85,7 +85,7 @@ box off;
 ax = gca;
 ax.YAxis.Exponent = 0;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
-        'XLim',[0.25 5.75], 'FontSize',7)
+        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.04 0.01])
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
 title('Cold Deserts', 'FontSize',7)
@@ -112,7 +112,7 @@ box off;
 ax = gca;
 ax.YAxis.Exponent = 0;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
-        'XLim',[0.25 5.75], 'FontSize',7)
+        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.04 0.01])
 ylabel('Mean CSIF anomaly (mW m^{-2} nm^{-1} sr^{-1})', 'FontSize',8)
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
@@ -139,7 +139,7 @@ box off;
 ax = gca;
 ax.YAxis.Exponent = 0;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
-        'XLim',[0.25 5.75], 'FontSize',7)
+        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.04 0.01])
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
 title('Warm Deserts', 'FontSize',7)
@@ -165,7 +165,7 @@ hold off;
 box off;
 ax = gca;
 ax.YAxis.Exponent = 0;
-set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
+set(gca, 'TickDir','out', 'TickLength',[0.02 0], 'YLim',[-0.04 0.01],...
         'XLim',[0.25 5.75], 'FontSize',7,'YAxisLocation','right')
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
@@ -191,7 +191,7 @@ hold off;
 box off;
 ax = gca;
 ax.YAxis.Exponent = 0;
-set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
+set(gca, 'TickDir','out', 'TickLength',[0.02 0], 'YLim',[-0.04 0.01],...
         'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.01 0.002],...
         'YAxisLocation','right','YTickLabels',{'-0.01','','0'})
 ylabel('Mean CSIF anomaly (mW m^{-2} nm^{-1} sr^{-1})', 'FontSize',8)
@@ -219,7 +219,7 @@ hold off;
 box off;
 ax = gca;
 ax.YAxis.Exponent = 0;
-set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
+set(gca, 'TickDir','out', 'TickLength',[0.02 0], 'YLim',[-0.04 0.01],...
         'XLim',[0.25 5.75], 'FontSize',7,'YAxisLocation','right')
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
@@ -238,7 +238,8 @@ h.Units = 'inches';
 h.Position = [1 1 4.5 2];
 
 plot([0 6],[nanmean(CSIF_obs(~isnan(ecoL2))) nanmean(CSIF_obs(~isnan(ecoL2)))], 'k-', 'LineWidth',2)
-text(5.75, nanmean(CSIF_obs(~isnan(ecoL2))), 'observed','FontSize',9,'VerticalAlignment','bottom','HorizontalAlignment','right')
+text(5.75, nanmean(CSIF_obs(~isnan(ecoL2))), 'CSIF total anomaly','FontSize',9,...
+    'VerticalAlignment','top','HorizontalAlignment','right')
 hold on;
 bar(1, nanmean(CSIF_all(~isnan(ecoL2))), 'FaceColor',clr(5,:), 'EdgeColor',clr(5,:).^2, 'LineWidth',1.5);
 bar(2, nanmean(CSIF_par(~isnan(ecoL2))), 'FaceColor',sqrt(clr(4,:)), 'EdgeColor',clr(4,:).^2, 'LineWidth',1.5);
