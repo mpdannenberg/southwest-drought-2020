@@ -80,7 +80,7 @@ parfor i = 1:ny
             X = cat(3, rg, sm, tmean, vpd);
             [mdl, mdl_stats] = anomaly_attribution(y, X, 'nsims',100,'nlags',1,...
                 'yname','GPP', 'xnames',{'PAR','SM','Tair','VPD'},'method','stepwiselm',...
-                'modelspec','purequadratic','trainset',(tmean>0), 'baseyrs',(yrs>=2015 & yrs<=2019));
+                'modelspec','purequadratic','trainset',(tmean>0), 'baseyrs',(yr>=2015 & yr<=2019));
             
             GPP_r2(i,j) = mean(mdl_stats.R2_Validation);
             GPP_obs(i,j) = mean(mdl.GPP_Obs(idx) - mdl.GPP_Avg(idx));
