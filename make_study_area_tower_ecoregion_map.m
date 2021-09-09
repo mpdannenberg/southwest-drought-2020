@@ -104,10 +104,10 @@ cb.FontSize = 8;
 cb.TickLength = 0;
 
 % bounding box
-plotm([31 37.5], [-115 -115], 'k-', 'LineWidth',2)
-plotm([31 37.5], [-102.5 -102.5], 'k-', 'LineWidth',2)
-plotm(repmat(31, 1, length(-115:0.1:-102.5)), -115:0.1:-102.5, 'k-', 'LineWidth',2)
-plotm(repmat(37.5, 1, length(-115:0.1:-102.5)), -115:0.1:-102.5, 'k-', 'LineWidth',2)
+plotm([31 39], [-122 -122], 'k-', 'LineWidth',2)
+plotm([31 39], [-102.5 -102.5], 'k-', 'LineWidth',2)
+plotm(repmat(31, 1, length(-122:0.1:-102.5)), -122:0.1:-102.5, 'k-', 'LineWidth',2)
+plotm(repmat(39, 1, length(-122:0.1:-102.5)), -122:0.1:-102.5, 'k-', 'LineWidth',2)
 
 % Add labels for ecoregions
 text(-0.0657, 0.7893, 'a', 'HorizontalAlignment','center', 'VerticalAlignment','middle', 'FontSize',16)
@@ -122,9 +122,9 @@ text(0.0338, 0.5649, 'f', 'HorizontalAlignment','center', 'VerticalAlignment','m
 
 % Inset with tower locations (plus slight offsets for nearby towers to make
 % them visibly distinct)
-h1 = axes('Parent', gcf, 'Position', [0.55 0.7 0.44 0.29]);
+h1 = axes('Parent', gcf, 'Position', [0.48 0.715 0.5 0.29]);
 set(h1, 'Color','w')
-axesm('lambert','MapLatLimit',[31 37.5],'MapLonLimit',[-115 -102.5],'grid',...
+axesm('lambert','MapLatLimit',[31 39],'MapLonLimit',[-122 -102.5],'grid',...
         'off','PLineLocation',4,'MLineLocation',8,'MeridianLabel','off',...
         'ParallelLabel','off','GLineWidth',0.5,'Frame','on','FFaceColor',...
         'w', 'FontName', 'Helvetica','GColor',[0.6 0.6 0.6],...
@@ -133,30 +133,32 @@ axesm('lambert','MapLatLimit',[31 37.5],'MapLonLimit',[-115 -102.5],'grid',...
 geoshow(states,'FaceColor','none','EdgeColor',[0.3 0.3 0.3])
 axis off;
 axis image;
-flat = [34.4385     (31.8214 + 0.05)    (31.789379 - 0.05)   (34.3349 - 0.05)   (34.3623 + 0.1)    35.8624     (31.7438 + 0.05)    34.4255     (31.7365 - 0.05)];
-flon = [-106.2377   (-110.8661 - 0.05)  (-110.827675 + 0.05) (-106.7442 - 0.05) (-106.702 + 0.05)   -106.5974   (-110.0522 - 0.05)  -105.8615   (-109.9419 + 0.05)];
-figbp = [1 1 5 2 5 1 2 3 5];
+flat = [34.4385     (31.8214 + 0.05)    (31.789379 - 0.05)   (34.3349 - 0.05)   (34.3623 + 0.1)    (31.7438 + 0.05)    34.4255     (31.7365 - 0.05)     (38.4309 + 0.1)    (38.4133 - 0.1)];
+flon = [-106.2377   (-110.8661 - 0.05)  (-110.827675 + 0.05) (-106.7442 - 0.05) (-106.702 + 0.05)  (-110.0522 - 0.05)  -105.8615   (-109.9419 + 0.05)   (-120.966 + 0.1)   (-120.9508 - 0.1)];
+figbp = [1 1 5 2 5 2 3 5 1 4];
 scatterm(flat, flon, 40, figbp, 'filled', 'Marker','^', 'MarkerEdgeColor','k')
 caxis(gca, [0.5 8.5])
 colormap(gca, clr2);
-textm(34.55, -106.2377, 'Mpj', 'HorizontalAlignment','center',...
-    'VerticalAlignment','bottom', 'FontSize',9, 'FontWeight','bold');
+textm(34.55+0.05, -106.2377, 'Mpj', 'HorizontalAlignment','center',...
+    'VerticalAlignment','bottom', 'FontSize',9);
 textm((31.8214 + 0.05), (-110.8661 - 0.05), 'SRM', 'HorizontalAlignment','right',...
-    'VerticalAlignment','bottom', 'FontSize',9, 'FontWeight','bold');
+    'VerticalAlignment','bottom', 'FontSize',9);
 textm((31.789379 - 0.05), (-110.827675 + 0.05), 'SRG', 'HorizontalAlignment','right',...
-    'VerticalAlignment','top', 'FontSize',9, 'FontWeight','bold');
+    'VerticalAlignment','top', 'FontSize',9);
 textm((34.3349 - 0.05), (-106.7442 - 0.05), 'Ses', 'HorizontalAlignment','center',...
-    'VerticalAlignment','top', 'FontSize',9, 'FontWeight','bold');
+    'VerticalAlignment','top', 'FontSize',9);
 textm((34.3623 + 0.3), (-106.85), 'Seg', 'HorizontalAlignment','right',...
-    'VerticalAlignment','middle', 'FontSize',9, 'FontWeight','bold');
-textm(35.8624, -106.5974, 'Vcp', 'HorizontalAlignment','left',...
-    'VerticalAlignment','bottom', 'FontSize',9, 'FontWeight','bold');
+    'VerticalAlignment','middle', 'FontSize',9);
 textm((31.7438 + 0.05), (-110.0522 - 0.05), 'Whs', 'HorizontalAlignment','left',...
-    'VerticalAlignment','bottom', 'FontSize',9, 'FontWeight','bold');
+    'VerticalAlignment','bottom', 'FontSize',9);
 textm((34.4255 + 0.05), (-105.8615 + 0.05), 'Wjs', 'HorizontalAlignment','left',...
-    'VerticalAlignment','top', 'FontSize',9, 'FontWeight','bold');
+    'VerticalAlignment','top', 'FontSize',9);
 textm((31.7365 - 0.05), (-109.9419 + 0.05), 'Wkg', 'HorizontalAlignment','left',...
-    'VerticalAlignment','top', 'FontSize',9, 'FontWeight','bold');
+    'VerticalAlignment','top', 'FontSize',9);
+textm((38.4309 + 0.15), (-120.966 + 0.25), 'Ton', 'HorizontalAlignment','left',...
+    'VerticalAlignment','middle', 'FontSize',9);
+textm((38.4133 - 0.1), (-120.9508 - 0.05), 'Var', 'HorizontalAlignment','center',...
+    'VerticalAlignment','top', 'FontSize',9);
 
 set(gcf,'PaperPositionMode','auto')
 print('-dpng','-f1','-r300','./output/study-area-lc-towers.png')
