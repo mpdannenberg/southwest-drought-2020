@@ -46,7 +46,7 @@ for i = 1:length(years)
     VPD_monthly(:,:,yr == years(i)) = temp(:,:,:);
     
 end
-clear i temp years;
+clear i temp;
 
 % Loop through each grid cell and run attribution
 idx = yr == 2020 & mo>=7 & mo<=10;
@@ -80,7 +80,7 @@ parfor i = 1:ny
             X = cat(3, rg, sm, tmean, vpd);
             [mdl, mdl_stats] = anomaly_attribution(y, X, 'nsims',100,'nlags',1,...
                 'yname','GPP', 'xnames',{'PAR','SM','Tair','VPD'},'method','stepwiselm',...
-                'modelspec','purequadratic','trainset',(tmean>0), 'baseyrs',(yr>=2015 & yr<=2019));
+                'modelspec','purequadratic','trainset',(tmean>0), 'baseyrs',(years>=2015 & years<=2019));
             
             GPP_r2(i,j) = mean(mdl_stats.R2_Validation);
             GPP_obs(i,j) = mean(mdl.GPP_Obs(idx) - mdl.GPP_Avg(idx));
