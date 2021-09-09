@@ -25,13 +25,13 @@ GPP_vpd_high = quantile(GPP_vpd_ens, 0.975, 3);
 
 %% Add EcoRegions 
 load ./data/ecoregions.mat;
-eco_bounds(isnan(GPP_obs)) = 0;
+eco_bounds(isnan(GPP_obs) | isnan(eco_bounds)) = 0;
 
 %% Map
 clr = wesanderson('fantasticfox1');
-clr1 = make_cmap([clr(3,:).^10;clr(3,:).^4;clr(3,:);1 1 1],9);
-clr2 = make_cmap([1 1 1;clr(1,:);clr(1,:).^4;clr(1,:).^10],9);
-clr = flipud([clr1(1:8,:);clr2(2:9,:)]);
+clr1 = make_cmap([clr(3,:).^10;clr(3,:).^4;clr(3,:);1 1 1],11);
+clr2 = make_cmap([1 1 1;clr(1,:);clr(1,:).^4;clr(1,:).^10],11);
+clr = flipud([clr1(1:10,:);clr2(2:11,:)]);
 
 h = figure('Color','w');
 h.Units = 'inches';
@@ -46,7 +46,7 @@ axesm('lambert','MapLatLimit',latlim,'MapLonLimit',lonlim,'grid',...
 axis off;
 axis image;
 surfm(lat, lon, GPP_obs)
-caxis([-0.8 0.8])
+caxis([-1 1])
 colormap(gca, clr);
 geoshow(states,'FaceColor','none','EdgeColor',[0.3 0.3 0.3])
 contourm(lat, lon, eco_bounds, 'LineColor',[0.2 0.2 0.2], 'LineWidth',1.2, 'LevelList',0.5:1:6.5);
@@ -56,8 +56,8 @@ ax.Position(2) = 0.02;
 
 cb = colorbar('northoutside');
 cb.Position = [0.3    0.86    0.4    0.04];
-cb.Ticks = -0.8:0.1:0.8;
-cb.TickLabels = {'-0.8','','-0.6','','-0.4','','-0.2','','0','','0.2','','0.4','','0.6','','0.8'};
+cb.Ticks = -1:0.1:1;
+cb.TickLabels = {'-1','','-0.8','','-0.6','','-0.4','','-0.2','','0','','0.2','','0.4','','0.6','','0.8','','1'};
 cb.FontSize = 7;
 cb.TickLength = 0.06;
 xlabel(cb, 'Mean GPP anomaly (g C m^{-2} day^{-1})','FontSize',8)
@@ -69,7 +69,7 @@ clr = wesanderson('fantasticfox1');
 h1 = axes('Parent', gcf, 'Position', [0.07 0.72 0.15 0.19]);
 set(h1, 'Color','w')
 plot([0 6],[nanmean(GPP_obs(ecoL2==10.1)) nanmean(GPP_obs(ecoL2==10.1))], 'k-', 'LineWidth',2)
-text(3.5, nanmean(GPP_obs(ecoL2==10.1)), 'observed','FontSize',7,'VerticalAlignment','bottom')
+text(3, nanmean(GPP_obs(ecoL2==10.1)), 'SMAP L4C','FontSize',7,'VerticalAlignment','top','HorizontalAlignment','center')
 hold on;
 bar(1, nanmean(GPP_all(ecoL2==10.1)), 'FaceColor',clr(5,:), 'EdgeColor',clr(5,:).^2, 'LineWidth',1.5);
 bar(2, nanmean(GPP_par(ecoL2==10.1)), 'FaceColor',sqrt(clr(4,:)), 'EdgeColor',clr(4,:).^2, 'LineWidth',1.5);
@@ -84,7 +84,7 @@ plot([5 5], [nanmean(GPP_vpd_low(ecoL2==10.1)) nanmean(GPP_vpd_high(ecoL2==10.1)
 hold off;
 box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
-        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.68 0.08])
+        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.85 0.15])
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
 title('Cold Deserts', 'FontSize',7)
@@ -95,7 +95,7 @@ annotation('line',[0.22 0.43],[0.8 0.51], 'LineWidth',1);
 h1 = axes('Parent', gcf, 'Position', [0.07 0.4 0.15 0.19]);
 set(h1, 'Color','w')
 plot([0 6],[nanmean(GPP_obs(ecoL2==11.1)) nanmean(GPP_obs(ecoL2==11.1))], 'k-', 'LineWidth',2)
-text(3.5, nanmean(GPP_obs(ecoL2==11.1)), 'observed','FontSize',7,'VerticalAlignment','top')
+text(3, nanmean(GPP_obs(ecoL2==11.1)), 'SMAP L4C','FontSize',7,'VerticalAlignment','top','HorizontalAlignment','center')
 hold on;
 bar(1, nanmean(GPP_all(ecoL2==11.1)), 'FaceColor',clr(5,:), 'EdgeColor',clr(5,:).^2, 'LineWidth',1.5);
 bar(2, nanmean(GPP_par(ecoL2==11.1)), 'FaceColor',sqrt(clr(4,:)), 'EdgeColor',clr(4,:).^2, 'LineWidth',1.5);
@@ -110,7 +110,7 @@ plot([5 5], [nanmean(GPP_vpd_low(ecoL2==11.1)) nanmean(GPP_vpd_high(ecoL2==11.1)
 hold off;
 box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
-        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.68 0.08])
+        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.85 0.15])
 ylabel('Mean GPP anomaly (g C m^{-2} day^{-1})', 'FontSize',8)
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
@@ -121,7 +121,7 @@ annotation('line',[0.22 0.34],[0.48 0.39], 'LineWidth',1);
 h1 = axes('Parent', gcf, 'Position', [0.07 0.08 0.15 0.19]);
 set(h1, 'Color','w')
 plot([0 6],[nanmean(GPP_obs(ecoL2==10.2)) nanmean(GPP_obs(ecoL2==10.2))], 'k-', 'LineWidth',2)
-text(3.5, nanmean(GPP_obs(ecoL2==10.2)), 'observed','FontSize',7,'VerticalAlignment','bottom')
+text(3, nanmean(GPP_obs(ecoL2==10.2)), 'SMAP L4C','FontSize',7,'VerticalAlignment','top','HorizontalAlignment','center')
 hold on;
 bar(1, nanmean(GPP_all(ecoL2==10.2)), 'FaceColor',clr(5,:), 'EdgeColor',clr(5,:).^2, 'LineWidth',1.5);
 bar(2, nanmean(GPP_par(ecoL2==10.2)), 'FaceColor',sqrt(clr(4,:)), 'EdgeColor',clr(4,:).^2, 'LineWidth',1.5);
@@ -136,7 +136,7 @@ plot([5 5], [nanmean(GPP_vpd_low(ecoL2==10.2)) nanmean(GPP_vpd_high(ecoL2==10.2)
 hold off;
 box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
-        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.68 0.08])
+        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.85 0.15])
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
 title('Warm Deserts', 'FontSize',7)
@@ -147,7 +147,7 @@ annotation('line',[0.22 0.68],[0.16 0.12], 'LineWidth',1);
 h1 = axes('Parent', gcf, 'Position', [0.78 0.72 0.15 0.19]);
 set(h1, 'Color','w')
 plot([0 6],[nanmean(GPP_obs(ecoL2==9.4)) nanmean(GPP_obs(ecoL2==9.4))], 'k-', 'LineWidth',2)
-text(0.5, nanmean(GPP_obs(ecoL2==9.4)), 'observed','FontSize',7,'VerticalAlignment','bottom')
+text(3, nanmean(GPP_obs(ecoL2==9.4)), 'SMAP L4C','FontSize',7,'VerticalAlignment','bottom','HorizontalAlignment','center')
 hold on;
 bar(1, nanmean(GPP_all(ecoL2==9.4)), 'FaceColor',clr(5,:), 'EdgeColor',clr(5,:).^2, 'LineWidth',1.5);
 bar(2, nanmean(GPP_par(ecoL2==9.4)), 'FaceColor',sqrt(clr(4,:)), 'EdgeColor',clr(4,:).^2, 'LineWidth',1.5);
@@ -162,7 +162,7 @@ plot([5 5], [nanmean(GPP_vpd_low(ecoL2==9.4)) nanmean(GPP_vpd_high(ecoL2==9.4))]
 hold off;
 box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
-        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.68 0.08],'YAxisLocation','right')
+        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.85 0.15],'YAxisLocation','right')
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
 title('Semiarid prairies', 'FontSize',7)
@@ -172,7 +172,7 @@ annotation('line',[0.78 0.68],[0.78 0.45], 'LineWidth',1);
 h1 = axes('Parent', gcf, 'Position', [0.78 0.4 0.15 0.19]);
 set(h1, 'Color','w')
 plot([0 6],[nanmean(GPP_obs(ecoL2==13.1)) nanmean(GPP_obs(ecoL2==13.1))], 'k-', 'LineWidth',2)
-text(0.5, nanmean(GPP_obs(ecoL2==13.1)), 'observed','FontSize',7,'VerticalAlignment','bottom')
+text(3, nanmean(GPP_obs(ecoL2==13.1)), 'SMAP L4C','FontSize',7,'VerticalAlignment','top','HorizontalAlignment','center')
 hold on;
 bar(1, nanmean(GPP_all(ecoL2==13.1)), 'FaceColor',clr(5,:), 'EdgeColor',clr(5,:).^2, 'LineWidth',1.5);
 bar(2, nanmean(GPP_par(ecoL2==13.1)), 'FaceColor',sqrt(clr(4,:)), 'EdgeColor',clr(4,:).^2, 'LineWidth',1.5);
@@ -187,7 +187,7 @@ plot([5 5], [nanmean(GPP_vpd_low(ecoL2==13.1)) nanmean(GPP_vpd_high(ecoL2==13.1)
 hold off;
 box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
-        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.68 0.08],'YAxisLocation','right')
+        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.85 0.15],'YAxisLocation','right')
 ylabel('Mean GPP anomaly (g C m^{-2} day^{-1})', 'FontSize',8)
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
@@ -198,7 +198,7 @@ annotation('line',[0.78 0.54],[0.46 0.255], 'LineWidth',1);
 h1 = axes('Parent', gcf, 'Position', [0.78 0.08 0.15 0.19]);
 set(h1, 'Color','w')
 plot([0 6],[nanmean(GPP_obs(ecoL2==12.1)) nanmean(GPP_obs(ecoL2==12.1))], 'k-', 'LineWidth',2)
-text(0.5, nanmean(GPP_obs(ecoL2==12.1)), 'observed','FontSize',7,'VerticalAlignment','bottom')
+text(3, nanmean(GPP_obs(ecoL2==12.1)), 'SMAP L4C','FontSize',7,'VerticalAlignment','bottom','HorizontalAlignment','center')
 hold on;
 bar(1, nanmean(GPP_all(ecoL2==12.1)), 'FaceColor',clr(5,:), 'EdgeColor',clr(5,:).^2, 'LineWidth',1.5);
 bar(2, nanmean(GPP_par(ecoL2==12.1)), 'FaceColor',sqrt(clr(4,:)), 'EdgeColor',clr(4,:).^2, 'LineWidth',1.5);
@@ -213,7 +213,7 @@ plot([5 5], [nanmean(GPP_vpd_low(ecoL2==12.1)) nanmean(GPP_vpd_high(ecoL2==12.1)
 hold off;
 box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
-        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.68 0.08],'YAxisLocation','right')
+        'XLim',[0.25 5.75], 'FontSize',7, 'YLim',[-0.85 0.15],'YAxisLocation','right')
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
 title('Sierra Madre Piedmont', 'FontSize',7)
