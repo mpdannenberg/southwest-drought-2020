@@ -24,44 +24,7 @@ GPP_tair_high = quantile(GPP_tair_ens, 0.975, 3);
 GPP_vpd_high = quantile(GPP_vpd_ens, 0.975, 3);
 
 %% Add EcoRegions 
-ecoL3 = shaperead('D:\Data_Analysis\EcoRegions\NA_CEC_Eco_Level3_GEO.shp', 'UseGeoCoords',true);
-ecoL1_code = cellfun(@str2double, {ecoL3.NA_L1CODE});
-idx = ecoL1_code == 6 | ecoL1_code == 7 | (ecoL1_code >=9 & ecoL1_code <=13);
-ecoL3 = ecoL3(idx);
-ecoL2_code = cellfun(@str2double, {ecoL3.NA_L2CODE});
-clear idx ecoL1_code;
-
-[LON, LAT] = meshgrid(lon, lat);
-LatLon = [reshape(LAT, [], 1) reshape(LON, [], 1)];
-ecoL2 = NaN(size(LatLon,1),1);
-
-for i = 1:length(ecoL3)
-    
-    [IN, ON] = inpolygon(LatLon(:,1), LatLon(:,2), ecoL3(i).Lat, ecoL3(i).Lon);
-    ecoL2(IN | ON) = str2double(ecoL3(i).NA_L2CODE);
-    
-end
-ecoL2 = reshape(ecoL2, size(LAT, 1), size(LAT, 2));
-clear LON LAT LatLon i IN ON;
-
-%% Remove small ecoregions or regions outside main domain or regions outside droughtiest part
-ecoL2(ecoL2 == 13.2) = NaN;
-ecoL2(ecoL2 == 9.2) = NaN;
-ecoL2(ecoL2 == 9.6) = NaN;
-ecoL2(ecoL2 == 6.2) = NaN;
-ecoL2(ecoL2 == 7.1) = NaN;
-ecoL2(ecoL2 == 9.3) = NaN;
-ecos = unique(ecoL2(~isnan(ecoL2)));
-idx = ismember(ecoL2_code, ecos);
-ecoL3 = ecoL3(idx);
-
-%% Get boundaries of ecoregions
-eco_bounds = zeros(size(ecoL2));
-for i = 1:length(ecos)
-    
-    eco_bounds(ecoL2==ecos(i)) = i;
-    
-end
+load ./data/ecoregions.mat;
 eco_bounds(isnan(GPP_obs)) = 0;
 
 %% Make overall drought figure
