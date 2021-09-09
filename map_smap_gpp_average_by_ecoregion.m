@@ -12,7 +12,7 @@ states = shaperead('usastatehi','UseGeoCoords',true);
 
 %% Add EcoRegions 
 load ./data/ecoregions.mat;
-eco_bounds(isnan(GPP_obs)) = 0;
+eco_bounds(isnan(eco_bounds)) = 0;
 
 %% Calculate annual July-October mean GPP
 windowSize = 4;
