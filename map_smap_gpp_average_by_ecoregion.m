@@ -107,7 +107,7 @@ set(h1, 'Color','w')
 for i=1:6; gpp_temp = gpp(:,:,i); GPP_total(i) = nanmean(gpp_temp(ecoL2==10.1)); end
 plot(2015:2020, GPP_total, 'k-', 'LineWidth',1.2)
 hold on;
-plot([2015 2020], [mean(GPP_total) mean(GPP_total)], 'k--')
+plot([2015 2020], [mean(GPP_total(1:5)) mean(GPP_total(1:5))], 'k--')
 plot(2019:2020, GPP_total(5:6),'-','Color', clr(2,:).^2, 'LineWidth',1.3)
 scatter(2015:2020, GPP_total, 30, 'k', 'filled')
 scatter(2020, GPP_total(6), 40, clr(2,:).^2, 'filled')
@@ -115,7 +115,7 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7)
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total), 2)),'%'],...
+text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
     'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
     'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
 title('Cold Deserts', 'FontSize',7)
@@ -128,7 +128,7 @@ set(h1, 'Color','w')
 for i=1:6; gpp_temp = gpp(:,:,i); GPP_total(i) = nanmean(gpp_temp(ecoL2==11.1)); end
 plot(2015:2020, GPP_total, 'k-', 'LineWidth',1.2)
 hold on;
-plot([2015 2020], [mean(GPP_total) mean(GPP_total)], 'k--')
+plot([2015 2020], [mean(GPP_total(1:5)) mean(GPP_total(1:5))], 'k--')
 plot(2019:2020, GPP_total(5:6),'-','Color', clr(2,:).^2, 'LineWidth',1.3)
 scatter(2015:2020, GPP_total, 30, 'k', 'filled')
 scatter(2020, GPP_total(6), 40, clr(2,:).^2, 'filled')
@@ -136,7 +136,7 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7)
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total), 2)),'%'],...
+text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
     'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
     'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
 title('Mediterranean California', 'FontSize',7)
@@ -149,7 +149,7 @@ set(h1, 'Color','w')
 for i=1:6; gpp_temp = gpp(:,:,i); GPP_total(i) = nanmean(gpp_temp(ecoL2==10.2)); end
 plot(2015:2020, GPP_total, 'k-', 'LineWidth',1.2)
 hold on;
-plot([2015 2020], [mean(GPP_total) mean(GPP_total)], 'k--')
+plot([2015 2020], [mean(GPP_total(1:5)) mean(GPP_total(1:5))], 'k--')
 plot(2019:2020, GPP_total(5:6),'-','Color', clr(2,:).^2, 'LineWidth',1.3)
 scatter(2015:2020, GPP_total, 30, 'k', 'filled')
 scatter(2020, GPP_total(6), 40, clr(2,:).^2, 'filled')
@@ -157,7 +157,7 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7)
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total), 2)),'%'],...
+text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
     'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
     'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
 title('Warm Deserts', 'FontSize',7)
@@ -170,7 +170,7 @@ set(h1, 'Color','w')
 for i=1:6; gpp_temp = gpp(:,:,i); GPP_total(i) = nanmean(gpp_temp(ecoL2==9.4)); end
 plot(2015:2020, GPP_total, 'k-', 'LineWidth',1.2)
 hold on;
-plot([2015 2020], [mean(GPP_total) mean(GPP_total)], 'k--')
+plot([2015 2020], [mean(GPP_total(1:5)) mean(GPP_total(1:5))], 'k--')
 plot(2019:2020, GPP_total(5:6),'-','Color', clr(2,:).^2, 'LineWidth',1.3)
 scatter(2015:2020, GPP_total, 30, 'k', 'filled')
 scatter(2020, GPP_total(6), 40, clr(2,:).^2, 'filled')
@@ -178,7 +178,7 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7, 'YAxisLocation','right')
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total), 2)),'%'],...
+text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
     'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
     'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
 title('Semiarid prairies', 'FontSize',7)
@@ -190,7 +190,7 @@ set(h1, 'Color','w')
 for i=1:6; gpp_temp = gpp(:,:,i); GPP_total(i) = nanmean(gpp_temp(ecoL2==13.1)); end
 plot(2015:2020, GPP_total, 'k-', 'LineWidth',1.2)
 hold on;
-plot([2015 2020], [mean(GPP_total) mean(GPP_total)], 'k--')
+plot([2015 2020], [mean(GPP_total(1:5)) mean(GPP_total(1:5))], 'k--')
 plot(2019:2020, GPP_total(5:6),'-','Color', clr(2,:).^2, 'LineWidth',1.3)
 scatter(2015:2020, GPP_total, 30, 'k', 'filled')
 scatter(2020, GPP_total(6), 40, clr(2,:).^2, 'filled')
@@ -198,7 +198,7 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7, 'YAxisLocation','right')
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total), 2)),'%'],...
+text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
     'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
     'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
 title('Upper Gila Mountains', 'FontSize',7)
@@ -211,7 +211,7 @@ set(h1, 'Color','w')
 for i=1:6; gpp_temp = gpp(:,:,i); GPP_total(i) = nanmean(gpp_temp(ecoL2==12.1)); end
 plot(2015:2020, GPP_total, 'k-', 'LineWidth',1.2)
 hold on;
-plot([2015 2020], [mean(GPP_total) mean(GPP_total)], 'k--')
+plot([2015 2020], [mean(GPP_total(1:5)) mean(GPP_total(1:5))], 'k--')
 plot(2019:2020, GPP_total(5:6),'-','Color', clr(2,:).^2, 'LineWidth',1.3)
 scatter(2015:2020, GPP_total, 30, 'k', 'filled')
 scatter(2020, GPP_total(6), 40, clr(2,:).^2, 'filled')
@@ -219,7 +219,7 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7, 'YAxisLocation','right')
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total), 2)),'%'],...
+text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
     'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
     'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
 title('Sierra Madre Piedmont', 'FontSize',7)

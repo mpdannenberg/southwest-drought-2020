@@ -85,7 +85,7 @@ for i=1:6; gpp_temp = gpp(:,:,i); GPP_total(i) = nansum(gpp_temp(~isnan(ecoL2)))
 subplot(3,1,1)
 plot(2015:2020, GPP_total, 'k-', 'LineWidth',1.2)
 hold on;
-plot([2015 2020], [mean(GPP_total) mean(GPP_total)], 'k--')
+plot([2015 2020], [mean(GPP_total(1:5)) mean(GPP_total(1:5))], 'k--')
 plot(2019:2020, GPP_total(5:6),'-','Color', clr(2,:).^2, 'LineWidth',1.3)
 scatter(2015:2020, GPP_total, 30, 'k', 'filled')
 scatter(2020, GPP_total(6), 40, clr(2,:).^2, 'filled')
@@ -115,15 +115,14 @@ plot([5 5], [nansum(a*GPP_vpd_low(~isnan(ecoL2))) nansum(a*GPP_vpd_high(~isnan(e
 hold off;
 box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],'XTick',1:5,...
-        'XLim',[0.25 5.75], 'FontSize',9, 'YLim',[-110 10],'YTick',-100:20:0)
+        'XLim',[0.25 5.75], 'FontSize',9, 'YLim',[-150 25],'YTick',-150:25:25)
+ylim = get(gca, 'YLim');
 ylabel('Jul-Oct GPP anomaly (Tg C)', 'FontSize',9)
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
-% ax = gca;
-% ax.Position(3) = 0.55;
-text(0.35, 0, 'b', 'FontSize',12, 'FontWeight','bold','VerticalAlignment','bottom')
+text(0.35, ylim(2), 'b', 'FontSize',12, 'FontWeight','bold','VerticalAlignment','top')
 
-h1 = axes('Parent', gcf, 'Position', [0.75 0.13 0.18 0.3]);
+h1 = axes('Parent', gcf, 'Position', [0.77 0.09 0.18 0.3]);
 set(h1, 'Color','w')
 p = pie(-1*fliplr([nansum(a*GPP_par(~isnan(ecoL2))) nansum(a*GPP_sm(~isnan(ecoL2))) nansum(a*GPP_tair(~isnan(ecoL2))) nansum(a*GPP_vpd(~isnan(ecoL2)))]), zeros(1,4));
 colormap(gca, flipud([sqrt(clr(4,:)); clr(3,:); clr(1,:); clr(2,:)]))
