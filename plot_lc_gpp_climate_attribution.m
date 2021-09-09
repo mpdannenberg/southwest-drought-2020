@@ -67,9 +67,9 @@ for i = 1:length(lc)
     hold off;
     box off;
     set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
-            'XLim',[0.25 5.75], 'FontSize',9, 'YLim',[-0.75 0.2])
+            'XLim',[0.25 5.75], 'FontSize',9, 'YLim',[-1 0.4], 'YTick',-1:0.25:0.25)
         
-    if i > (nrows-1)*ncols
+    if i > length(lc)-3
         set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'},'FontSize',9)
         xtickangle(-20)
     else
@@ -84,7 +84,8 @@ for i = 1:length(lc)
         set(gca, 'YTickLabel','')
     end
     
-    text(0.5, 0.2, [alphabet(i),') ',lc{i}], 'FontSize',11, 'FontWeight','bold');
+    ylim = get(gca,'YLim');
+    text(0.5, ylim(2), [alphabet(i),') ',lc{i}], 'FontSize',11, 'FontWeight','bold');
     
 end
 
