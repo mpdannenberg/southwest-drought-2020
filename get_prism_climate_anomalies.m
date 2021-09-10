@@ -134,7 +134,7 @@ cbar.Position(4) = 0.05;
 cbar.Ticks = -3.5:0.5:3.5;
 cbar.TickLabels = {'','-3','','-2','','-1','','0','','1','','2','','3',''};
 cbar.TickLength = 0.08;
-xlabel(cbar, 'T_{max} anomaly (K)');
+xlabel(cbar, ['T_{max} anomaly (',char(176),'C)']);
 
 clr = wesanderson('fantasticfox1');
 clr1 = make_cmap([clr(3,:).^10;clr(3,:).^4;clr(3,:);1 1 1],7);
@@ -148,8 +148,8 @@ ax = axesm('lambert','MapLatLimit',latlim,'MapLonLimit',lonlim,'grid',...
         'FLineWidth',1, 'FontColor',[0.5 0.5 0.5], 'MLabelParallel',25.11);
 axis off;
 axis image;
-surfm(lat(latidx), lon(lonidx), VPD_anom);
-caxis([-15 15]);
+surfm(lat(latidx), lon(lonidx), VPD_anom*0.1);
+caxis([-1.5 1.5]);
 colormap(gca, flipud(clr));
 geoshow(states,'FaceColor','none','EdgeColor',[0.3 0.3 0.3], 'LineWidth',0.3)
 subplotsqueeze(gca, 1.35)
@@ -161,13 +161,14 @@ ax.Position(2) = 0.02;
 cbar = colorbar('southoutside');
 cbar.Position(2) = 0.18;
 cbar.Position(4) = 0.05;
-cbar.Ticks = -15:2.5:15;
-cbar.TickLabels = {'-15','','-10','','-5','','0','','5','','10','','15'};
+cbar.Ticks = -1.5:0.25:1.5;
+cbar.TickLabels = {'-1.5','','-1','','-0.5','','0','','0.5','','1','','1.5'};
 cbar.TickLength = 0.08;
-xlabel(cbar, 'VPD_{max} anomaly (hPa)');
+xlabel(cbar, 'VPD_{max} anomaly (kPa)');
 
 set(gcf,'PaperPositionMode','auto')
 print('-dpng','-f1','-r300','./output/prism-2020-drought-anomalies.png')
+print('-dtiff','-f1','-r300','./output/prism-2020-drought-anomalies.tif')
 close all;
 
 
