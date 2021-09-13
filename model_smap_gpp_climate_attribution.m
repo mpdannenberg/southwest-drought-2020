@@ -17,6 +17,7 @@ RootSM_monthly = cat(3, NaN(ny,nx,3), RootSM_monthly, NaN(ny,nx,2));
 Tsoil_monthly = cat(3, NaN(ny,nx,3), Tsoil_monthly, NaN(ny,nx,2));
 yr = [repmat(2015,3,1); yr; repmat(2020,2,1)];
 mo = [[1:3]'; mo; [11:12]'];
+sampidx = randi(length(yr), length(yr), nsims);
 
 % Load and organize Gridmet Tmin, Tmax, VPD, SRAD
 Tmin_monthly = NaN(ny, nx, 12*length(years));
@@ -78,9 +79,10 @@ parfor i = 1:ny
         if sum(sum(tmean > 0)) >= 20 % Check that there's a reasonable amount of data for the training set
             
             X = cat(3, rg, sm, tmean, vpd);
-            [mdl, mdl_stats] = anomaly_attribution(y, X, 'nsims',100,'nlags',1,...
-                'yname','GPP', 'xnames',{'PAR','SM','Tair','VPD'},'method','stepwiselm',...
-                'modelspec','purequadratic','trainset',(tmean>0), 'baseyrs',(years>=2015 & years<=2019));
+            [mdl, mdl_stats] = anomaly_attribution(y, X, 'nsims',nsims, 'nlags',1,...
+                'yname','GPP', 'xnames',{'PAR','SM','Tair','VPD'}, 'method','stepwiselm',...
+                'modelspec','purequadratic', 'trainset',(tmean>0),...
+                'baseyrs',(years>=2015 & years<=2019), 'sampidx',sampidx);
             
             GPP_r2(i,j) = mean(mdl_stats.R2_Validation);
             GPP_obs(i,j) = mean(mdl.GPP_Obs(idx) - mdl.GPP_Avg(idx));

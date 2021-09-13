@@ -17,6 +17,7 @@ if nargin > 2 % read in advanced options if user-specified:
     nsims = 0; % Number of bootstrap simulations to use for model uncertainty
     trainset = true(size(y)); % observations to use for training the model
     baseyrs = true(1,nyrs); % years to use for baseline
+    sampidx = []; % matrix with sample IDs for bootstrapped models [length of data x nsims]
     % then over-write defaults if user-specified:
     Nvararg = length(varargin);
     for i = 1:Nvararg/2
@@ -41,6 +42,8 @@ if nargin > 2 % read in advanced options if user-specified:
                 trainset = valin;
             case 'baseyrs'
                 baseyrs = valin;
+            case 'sampidx'
+                sampidx = valin;
         end
     end
 else % otherwise, read in defaults:
@@ -53,6 +56,7 @@ else % otherwise, read in defaults:
     nsims = 0;
     trainset = true(size(y));
     baseyrs = true(1,nyrs); 
+    sampidx = []; 
 end
 
 % Deseasonalize response variable
@@ -61,6 +65,7 @@ y = (y - ybar);
 ybar = reshape(ybar, [], 1);
 y = reshape(y, [], 1);
 trainset = reshape(trainset, [], 1);
+N = length(y);
 
 % Deseasonalize predictor variables
 Xbar = repmat(nanmean(X(:,baseyrs,:), 2), 1, nyrs, 1);
@@ -96,7 +101,7 @@ Xpcs = Xpcs(:, 1:n);
 if strcmp(method, 'fitlm')
     mdl_full = fitlm(Xpcs(trainset,:), y(trainset), modelspec); 
 elseif strcmp(method, 'stepwiselm')
-    mdl_full = stepwiselm(Xpcs(trainset,:), y(trainset), modelspec, 'Criterion','bic', 'Verbose',0); 
+    mdl_full = stepwiselm(Xpcs(trainset,:), y(trainset),modelspec, 'Criterion','bic', 'Verbose',0); 
 else
     disp('"method" not recognized');
     return
@@ -114,13 +119,37 @@ if nsims > 0
     ysub = y(trainset);
     Xsub = Xpcs(trainset,:);
     for i = 1:nsims
-        [Xsamp, idx] = datasample(Xsub, nm, 1); % sample data with replacement
-        [~,ia] = setdiff(1:nm, idx); % find observations that were not sampled
+        if isempty(sampidx)
+            [Xsamp, idx] = datasample(Xsub, nm, 1); % sample data with replacement
+            [~,ia] = setdiff(1:nm, idx); % find observations that were not sampled
+            ysamp = ysub(idx);
+            Xout = Xsub(ia,:);
+            yout = ysub(ia);
+        elseif size(sampidx, 1)==size(X,1) & size(sampidx,2)==nsims
+            % Get sample set for this iteration
+            idx = sampidx(:,i);
+            
+            % Exclude samples that aren't in trainset
+            Lia = ismember(idx, find(trainset));
+            idx = idx(Lia);
+            Xsamp = Xpcs(idx, :);
+            ysamp = y(idx);
+            
+            % Find observations that weren't sampled
+            [~,ia] = setdiff(1:N, idx); % find observations that were not sampled
+            Lia = ismember(ia, find(trainset));
+            ia = ia(Lia);
+            Xout = Xpcs(ia,:);
+            yout = y(ia);
+        else
+            disp('"sampidx" does not match the dimensions of the data');
+            return
+        end
+        
+        mdl = fitlm(Xsamp, ysamp, ['y ~ ',mdl_full.Formula.LinearPredictor]);
 
-        mdl = fitlm(Xsamp, ysub(idx), ['y ~ ',mdl_full.Formula.LinearPredictor]);
-
-        yhat = predict(mdl, Xsub(ia,:));
-        r2_val(i) = corr(ysub(ia), yhat, 'rows','pairwise')^2;
+        yhat = predict(mdl, Xout);
+        r2_val(i) = corr(yout, yhat, 'rows','pairwise')^2;
         r2_cal(i) = mdl.Rsquared.Ordinary;
         mdl_ens{i} = mdl;
         Yall(:,i) = predict(mdl, Xpcs);
