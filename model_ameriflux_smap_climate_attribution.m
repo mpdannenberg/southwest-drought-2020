@@ -2,21 +2,21 @@
 % actual Ameriflux attribution)
 
 alphabet = 'abcdefghijklmnopqrstuvwxyz';
-nrows = 5;
-ncols = 2;
+nrows = 3;
+ncols = 3;
 
 h = figure('Color','w');
 h.Units = 'inches';
-h.Position = [1 1 4.5 7.5];
+h.Position = [1 1 6.5 6];
 clr = wesanderson('fantasticfox1');
 ax = tight_subplot(nrows, ncols, 0.02, [0.05 0.03], [0.12 0.05]);
 
-sites = {'US-SRG','US-SRM','US-Wkg','US-Whs','US-Mpj','US-Seg','US-Wjs','US-Ses','US-Ton','US-Var'};
-flat = [31.7894 31.8214 31.7365 31.7438 34.4385 34.3623 34.4255 34.3349 38.4309 38.4133];
-flon = [-110.8277 -110.8661 -109.9419 -110.0522 -106.2377 -106.7019 -105.8615 -106.7442 -120.966 -120.9508];
+sites = {'US-SRG','US-SRM','US-Wkg','US-Whs','US-Mpj','US-Seg','US-Wjs','US-Ses','US-Ton'};
+flat = [31.7894 31.8214 31.7365 31.7438 34.4385 34.3623 34.4255 34.3349 38.4309];
+flon = [-110.8277 -110.8661 -109.9419 -110.0522 -106.2377 -106.7019 -105.8615 -106.7442 -120.966];
 n = length(sites);
 
-Tstats = table('Size',[10 7], 'VariableTypes',{'string','string','string','string','string','string','string'},...
+Tstats = table('Size',[9 7], 'VariableTypes',{'string','string','string','string','string','string','string'},...
     'VariableNames',{'Site','dGPP_SMAP','dGPP_All','dGPP_PAR','dGPP_SM','dGPP_Tair','dGPP_VPD'});
 Tstats.Site = sites';
 
@@ -99,33 +99,21 @@ for i = 1:n
     box off;
     set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
             'XLim',[0.25 5.75], 'FontSize',7)
-    if i <= 2
+    if i <= 3
         set(gca,'YLim',[-2.5 0.5]);
-        ylim = get(gca, 'YLim');
-        text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
-        
-    elseif i <=4
-        set(gca,'YLim',[-2 0.5]);
-        ylim = get(gca, 'YLim');
-        text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
-        
     elseif i <=6
         set(gca,'YLim',[-1 0.5]);
-        ylim = get(gca, 'YLim');
-        text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
-        
-    elseif i >=9
-        set(gca,'YLim',[-0.75 0.75]);
-        ylim = get(gca, 'YLim');
-        text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
-        
+    elseif i <=9
+        set(gca,'YLim',[-0.5 0.5]);
+%     elseif i >=9
+%         set(gca,'YLim',[-0.75 0.75]);
     else
         set(gca,'YLim',[-0.5 0.25]);
-        ylim = get(gca, 'YLim');
-        text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
-        
     end
-        
+    
+    ylim = get(gca, 'YLim');
+    text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
+    
     if i > (nrows-1)*ncols
         set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
         xtickangle(-20)
@@ -138,7 +126,7 @@ for i = 1:n
         set(gca, 'YTickLabel','')
     end
     
-    if ceil(i/2) == 3 & rem(i, ncols) == 1
+    if ceil(i/3) == 2 & rem(i, ncols) == 1
         ylabel('Mean GPP anomaly (g C m^{-2} day^{-1})', 'FontSize',10)
     end
     
