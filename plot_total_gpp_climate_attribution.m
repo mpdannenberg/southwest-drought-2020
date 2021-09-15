@@ -12,16 +12,11 @@ lon = double(lon);
 states = shaperead('usastatehi','UseGeoCoords',true);
 
 %% Calculate CIs for each pixel
-GPP_all_low = quantile(GPP_all_ens, 0.025, 3);
-GPP_par_low = quantile(GPP_par_ens, 0.025, 3);
-GPP_sm_low = quantile(GPP_sm_ens, 0.025, 3);
-GPP_tair_low = quantile(GPP_tair_ens, 0.025, 3);
-GPP_vpd_low = quantile(GPP_vpd_ens, 0.025, 3);
-GPP_all_high = quantile(GPP_all_ens, 0.975, 3);
-GPP_par_high = quantile(GPP_par_ens, 0.975, 3);
-GPP_sm_high = quantile(GPP_sm_ens, 0.975, 3);
-GPP_tair_high = quantile(GPP_tair_ens, 0.975, 3);
-GPP_vpd_high = quantile(GPP_vpd_ens, 0.975, 3);
+GPP_all_ens = permute(GPP_all_ens, [3 1 2]);
+GPP_par_ens = permute(GPP_par_ens, [3 1 2]);
+GPP_sm_ens = permute(GPP_sm_ens, [3 1 2]);
+GPP_tair_ens = permute(GPP_tair_ens, [3 1 2]);
+GPP_vpd_ens = permute(GPP_vpd_ens, [3 1 2]);
 
 %% Add EcoRegions 
 load ./data/ecoregions.mat;
@@ -70,11 +65,16 @@ bar(2, nansum(a*GPP_par(~isnan(ecoL2))), 'FaceColor',sqrt(clr(4,:)), 'EdgeColor'
 bar(3, nansum(a*GPP_sm(~isnan(ecoL2))), 'FaceColor',clr(3,:), 'EdgeColor',clr(3,:).^2, 'LineWidth',1.5);
 bar(4, nansum(a*GPP_tair(~isnan(ecoL2))), 'FaceColor',clr(1,:), 'EdgeColor',clr(1,:).^2, 'LineWidth',1.5);
 bar(5, nansum(a*GPP_vpd(~isnan(ecoL2))), 'FaceColor',clr(2,:), 'EdgeColor',clr(2,:).^2, 'LineWidth',1.5);
-plot([1 1], [nansum(a*GPP_all_low(~isnan(ecoL2))) nansum(a*GPP_all_high(~isnan(ecoL2)))], '-', 'Color',clr(5,:).^2, 'LineWidth',1.5);
-plot([2 2], [nansum(a*GPP_par_low(~isnan(ecoL2))) nansum(a*GPP_par_high(~isnan(ecoL2)))], '-', 'Color',clr(4,:).^2, 'LineWidth',1.5);
-plot([3 3], [nansum(a*GPP_sm_low(~isnan(ecoL2))) nansum(a*GPP_sm_high(~isnan(ecoL2)))], '-', 'Color',clr(3,:).^2, 'LineWidth',1.5);
-plot([4 4], [nansum(a*GPP_tair_low(~isnan(ecoL2))) nansum(a*GPP_tair_high(~isnan(ecoL2)))], '-', 'Color',clr(1,:).^2, 'LineWidth',1.5);
-plot([5 5], [nansum(a*GPP_vpd_low(~isnan(ecoL2))) nansum(a*GPP_vpd_high(~isnan(ecoL2)))], '-', 'Color',clr(2,:).^2, 'LineWidth',1.5);
+GPP_all_ci = quantile(nansum(a*GPP_all_ens(:, ~isnan(ecoL2)), 2), [0.025 0.975]);
+GPP_par_ci = quantile(nansum(a*GPP_par_ens(:, ~isnan(ecoL2)), 2), [0.025 0.975]);
+GPP_sm_ci = quantile(nansum(a*GPP_sm_ens(:, ~isnan(ecoL2)), 2), [0.025 0.975]);
+GPP_tair_ci = quantile(nansum(a*GPP_tair_ens(:, ~isnan(ecoL2)), 2), [0.025 0.975]);
+GPP_vpd_ci = quantile(nansum(a*GPP_vpd_ens(:, ~isnan(ecoL2)), 2), [0.025 0.975]);
+plot([1 1], [GPP_all_ci(1) GPP_all_ci(2)], '-', 'Color',clr(5,:).^2, 'LineWidth',1.5);
+plot([2 2], [GPP_par_ci(1) GPP_par_ci(2)], '-', 'Color',clr(4,:).^2, 'LineWidth',1.5);
+plot([3 3], [GPP_sm_ci(1) GPP_sm_ci(2)], '-', 'Color',clr(3,:).^2, 'LineWidth',1.5);
+plot([4 4], [GPP_tair_ci(1) GPP_tair_ci(2)], '-', 'Color',clr(1,:).^2, 'LineWidth',1.5);
+plot([5 5], [GPP_vpd_ci(1) GPP_vpd_ci(2)], '-', 'Color',clr(2,:).^2, 'LineWidth',1.5);
 hold off;
 box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],'XTick',1:5,...

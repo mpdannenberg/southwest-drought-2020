@@ -11,16 +11,11 @@ lat = double(lat);
 lon = double(lon);
 
 %% Calculate CIs for each pixel
-GPP_all_low = quantile(GPP_all_ens, 0.025, 3);
-GPP_par_low = quantile(GPP_par_ens, 0.025, 3);
-GPP_sm_low = quantile(GPP_sm_ens, 0.025, 3);
-GPP_tair_low = quantile(GPP_tair_ens, 0.025, 3);
-GPP_vpd_low = quantile(GPP_vpd_ens, 0.025, 3);
-GPP_all_high = quantile(GPP_all_ens, 0.975, 3);
-GPP_par_high = quantile(GPP_par_ens, 0.975, 3);
-GPP_sm_high = quantile(GPP_sm_ens, 0.975, 3);
-GPP_tair_high = quantile(GPP_tair_ens, 0.975, 3);
-GPP_vpd_high = quantile(GPP_vpd_ens, 0.975, 3);
+GPP_all_ens = permute(GPP_all_ens, [3 1 2]);
+GPP_par_ens = permute(GPP_par_ens, [3 1 2]);
+GPP_sm_ens = permute(GPP_sm_ens, [3 1 2]);
+GPP_tair_ens = permute(GPP_tair_ens, [3 1 2]);
+GPP_vpd_ens = permute(GPP_vpd_ens, [3 1 2]);
 
 %% Read in land cover data
 load ./data/rangeland.mat;
@@ -59,11 +54,21 @@ for i = 1:length(lc)
     bar(3, nanmean(GPP_sm(rangeland==i & ~isnan(ecoL2))), 'FaceColor',clr(3,:), 'EdgeColor',clr(3,:).^2, 'LineWidth',1.5);
     bar(4, nanmean(GPP_tair(rangeland==i & ~isnan(ecoL2))), 'FaceColor',clr(1,:), 'EdgeColor',clr(1,:).^2, 'LineWidth',1.5);
     bar(5, nanmean(GPP_vpd(rangeland==i & ~isnan(ecoL2))), 'FaceColor',clr(2,:), 'EdgeColor',clr(2,:).^2, 'LineWidth',1.5);
-    plot([1 1], [nanmean(GPP_all_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_all_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(5,:).^2, 'LineWidth',1.5);
-    plot([2 2], [nanmean(GPP_par_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_par_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(4,:).^2, 'LineWidth',1.5);
-    plot([3 3], [nanmean(GPP_sm_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_sm_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(3,:).^2, 'LineWidth',1.5);
-    plot([4 4], [nanmean(GPP_tair_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_tair_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(1,:).^2, 'LineWidth',1.5);
-    plot([5 5], [nanmean(GPP_vpd_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_vpd_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(2,:).^2, 'LineWidth',1.5);
+    GPP_all_ci = quantile(nanmean(GPP_all_ens(:, rangeland==i & ~isnan(ecoL2)), 2), [0.025 0.975]);
+    GPP_par_ci = quantile(nanmean(GPP_par_ens(:, rangeland==i & ~isnan(ecoL2)), 2), [0.025 0.975]);
+    GPP_sm_ci = quantile(nanmean(GPP_sm_ens(:, rangeland==i & ~isnan(ecoL2)), 2), [0.025 0.975]);
+    GPP_tair_ci = quantile(nanmean(GPP_tair_ens(:, rangeland==i & ~isnan(ecoL2)), 2), [0.025 0.975]);
+    GPP_vpd_ci = quantile(nanmean(GPP_vpd_ens(:, rangeland==i & ~isnan(ecoL2)), 2), [0.025 0.975]);
+    plot([1 1], [GPP_all_ci(1) GPP_all_ci(2)], '-', 'Color',clr(5,:).^2, 'LineWidth',1.5);
+    plot([2 2], [GPP_par_ci(1) GPP_par_ci(2)], '-', 'Color',clr(4,:).^2, 'LineWidth',1.5);
+    plot([3 3], [GPP_sm_ci(1) GPP_sm_ci(2)], '-', 'Color',clr(3,:).^2, 'LineWidth',1.5);
+    plot([4 4], [GPP_tair_ci(1) GPP_tair_ci(2)], '-', 'Color',clr(1,:).^2, 'LineWidth',1.5);
+    plot([5 5], [GPP_vpd_ci(1) GPP_vpd_ci(2)], '-', 'Color',clr(2,:).^2, 'LineWidth',1.5);
+%     plot([1 1], [nanmean(GPP_all_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_all_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(5,:).^2, 'LineWidth',1.5);
+%     plot([2 2], [nanmean(GPP_par_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_par_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(4,:).^2, 'LineWidth',1.5);
+%     plot([3 3], [nanmean(GPP_sm_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_sm_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(3,:).^2, 'LineWidth',1.5);
+%     plot([4 4], [nanmean(GPP_tair_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_tair_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(1,:).^2, 'LineWidth',1.5);
+%     plot([5 5], [nanmean(GPP_vpd_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_vpd_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(2,:).^2, 'LineWidth',1.5);
     hold off;
     box off;
     set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
