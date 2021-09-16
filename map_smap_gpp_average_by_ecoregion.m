@@ -23,7 +23,7 @@ clear b a windowSize;
 
 % a = 9000 * 9000 * (31 + 31 + 30 + 31) * (1 / 10^12);
 gpp = gpp(:,:,mo==10);
-mgpp = mean(gpp, 3); mgpp(eco_bounds==0) = NaN;
+mgpp = mean(gpp(:,:,1:5), 3); mgpp(eco_bounds==0) = NaN;
 
 
 %% Map
@@ -190,7 +190,6 @@ annotation('line',[0.78 0.55],[0.24 0.18], 'LineWidth',1);
 
 % Save figure
 set(gcf,'PaperPositionMode','auto')
-print('-dpng','-f1','-r300','./output/smap-gpp-regional-mean.png')
 print('-dtiff','-f1','-r300','./output/smap-gpp-regional-mean.tif')
 close all;
 
