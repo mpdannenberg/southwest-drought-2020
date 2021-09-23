@@ -34,6 +34,7 @@ PPT = reshape(PPT, ny, nx, nt*nm);
 PPT_sum = filter(b, a, PPT, [], 3);
 PPT = PPT_sum(:, :, month1d==10);
 PPT_anom = PPT(:,:,year==2020) - mean(PPT(:, :, year>=1981 & year<=2010), 3);
+PPT_pct = PPT(:,:,year==2020) ./ mean(PPT(:, :, year>=1981 & year<=2010), 3);
 PPT_rank = NaN(size(PPT_anom));
 for i=1:ny
     for j=1:nx
@@ -89,8 +90,10 @@ ax = axesm('lambert','MapLatLimit',latlim,'MapLonLimit',lonlim,'grid',...
         'FLineWidth',1, 'FontColor',[0.5 0.5 0.5], 'MLabelParallel',25.11);
 axis off;
 axis image;
-surfm(lat(latidx), lon(lonidx), PPT_anom);
-caxis([-200 200]);
+% surfm(lat(latidx), lon(lonidx), PPT_anom);
+% caxis([-200 200]);
+surfm(lat(latidx), lon(lonidx), PPT_pct*100);
+caxis([0 200]);
 colormap(gca, clr);
 geoshow(states,'FaceColor','none','EdgeColor',[0.3 0.3 0.3], 'LineWidth',0.3)
 subplotsqueeze(gca, 1.35)
@@ -102,10 +105,13 @@ ax.Position(2) = 0.02;
 cbar = colorbar('southoutside');
 cbar.Position(2) = 0.18;
 cbar.Position(4) = 0.05;
-cbar.Ticks = -200:(200/6):200;
-cbar.TickLabels = {'-200','','','-100','','','0','','','100','','','200'};
+% cbar.Ticks = -200:(200/6):200;
+% cbar.TickLabels = {'-200','','','-100','','','0','','','100','','','200'};
+cbar.Ticks = 0:(100/6):200;
+cbar.TickLabels = {'0%','','','50%','','','100%','','','150%','','','200%'};
 cbar.TickLength = 0.08;
-xlabel(cbar, 'Precipitation anomaly (mm)');
+% xlabel(cbar, 'Precipitation anomaly (mm)');
+xlabel(cbar, 'Precipitation anomaly (%)');
 
 clr = wesanderson('fantasticfox1');
 clr1 = make_cmap([clr(3,:).^10;clr(3,:).^4;clr(3,:);1 1 1],8);
@@ -170,5 +176,4 @@ set(gcf,'PaperPositionMode','auto')
 print('-dpng','-f1','-r300','./output/prism-2020-drought-anomalies.png')
 print('-dtiff','-f1','-r300','./output/prism-2020-drought-anomalies.tif')
 close all;
-
 
