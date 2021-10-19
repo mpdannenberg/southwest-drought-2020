@@ -21,6 +21,7 @@ CSIF_vpd_ens = permute(CSIF_vpd_ens, [3 1 2]);
 %% Add EcoRegions 
 load ./data/ecoregions.mat;
 eco_bounds(isnan(CSIF_obs) | isnan(eco_bounds)) = 0; 
+CSIF_obs(eco_bounds==0) = NaN;
 
 %% Initiate table
 T = table('Size',[6 7], 'VariableTypes',{'string','string','string','string','string','string','string'},...
@@ -94,7 +95,7 @@ set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
 title('Cold Deserts', 'FontSize',7)
-annotation('line',[0.22 0.4],[0.83 0.75], 'LineWidth',1);
+annotation('line',[0.22 0.56],[0.83 0.55], 'LineWidth',1);
 annotation('line',[0.22 0.43],[0.83 0.51], 'LineWidth',1);
 
 T.dCSIF(1) = num2str(round(nanmean(CSIF_obs(ecoL2==10.1)), 3));
@@ -299,7 +300,6 @@ T.dCSIF_VPD(6) = sprintf('%.3f [%.3f, %.3f]', nanmean(CSIF_vpd(ecoL2==12.1)), CS
 
 %% Save figure and table
 set(gcf,'PaperPositionMode','auto')
-print('-dpng','-f1','-r300','./output/csif-regional-attribution.png')
 print('-dtiff','-f1','-r300','./output/csif-regional-attribution.tif')
 close all;
 
@@ -342,7 +342,6 @@ xtickangle(-25)
 % ax.Position(3) = 0.55;
 
 set(gcf,'PaperPositionMode','auto')
-print('-dpng','-f1','-r300','./output/csif-total-regional-attribution.png')
 print('-dtiff','-f1','-r300','./output/csif-total-regional-attribution.tif')
 close all;
 
