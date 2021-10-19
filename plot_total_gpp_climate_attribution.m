@@ -11,7 +11,7 @@ lon = double(lon);
 
 states = shaperead('usastatehi','UseGeoCoords',true);
 
-%% Calculate CIs for each pixel
+%% Rearrange dimensions
 GPP_all_ens = permute(GPP_all_ens, [3 1 2]);
 GPP_par_ens = permute(GPP_par_ens, [3 1 2]);
 GPP_sm_ens = permute(GPP_sm_ens, [3 1 2]);
@@ -92,7 +92,7 @@ colormap(gca, flipud([sqrt(clr(4,:)); clr(3,:); clr(1,:); clr(2,:)]))
 set(findobj(p,'Type','text'), 'FontSize',7);
 
 set(gcf,'PaperPositionMode','auto')
-print('-dpng','-f1','-r300','./output/smap-gpp-total-regional-attribution.png')
+% print('-dpng','-f1','-r300','./output/smap-gpp-total-regional-attribution.png')
 print('-dtiff','-f1','-r300','./output/smap-gpp-total-regional-attribution.tif')
 close all;
 
