@@ -82,7 +82,7 @@ text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)
     'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
     'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
 title('Cold Deserts', 'FontSize',7)
-annotation('line',[0.22 0.4],[0.8 0.75], 'LineWidth',1);
+annotation('line',[0.22 0.56],[0.8 0.55], 'LineWidth',1);
 annotation('line',[0.22 0.43],[0.8 0.51], 'LineWidth',1);
 
 % Mediterranean California

@@ -12,7 +12,8 @@ states = shaperead('usastatehi','UseGeoCoords',true);
 
 %% Read in land cover data
 load ./data/rangeland.mat;
-lc = {'Forest','Shrubland','Savanna','Annual','Perennial','Crop (NW)','Crop (SW)','Crop (plains)'};
+rangeland(rangeland > 6) = 6;
+lc = {'Forest','Shrubland','Savanna','Annual','Perennial','Crop'};
 
 %% Add EcoRegions 
 ecoL3 = shaperead('D:\Data_Analysis\EcoRegions\NA_CEC_Eco_Level3_GEO.shp', 'UseGeoCoords',true);
@@ -42,6 +43,8 @@ ecoL2(ecoL2 == 9.6) = NaN;
 ecoL2(ecoL2 == 6.2) = NaN;
 ecoL2(ecoL2 == 7.1) = NaN;
 ecoL2(ecoL2 == 9.3) = NaN;
+ecoL2(lat>44.5, lon<-118) = NaN; % Get rid of northernmost cold desert
+ecoL2(lat>45.5, :) = NaN; % Get rid of northernmost cold desert
 ecos = unique(ecoL2(~isnan(ecoL2)));
 idx = ismember(ecoL2_code, ecos);
 ecoL3 = ecoL3(idx);
@@ -74,8 +77,6 @@ clr2 = [clr(3,:).^3
     clr(3,:)
     clr(5,:)
     clr(1,:)
-    clr(4,:)
-    sqrt(clr(2,:))
     clr(2,:).^2];
 
 eco_bounds(eco_bounds==0) = NaN;
@@ -88,7 +89,7 @@ axesm('lambert','MapLatLimit',latlim,'MapLonLimit',lonlim,'grid',...
 axis off;
 axis image;
 surfm(lat, lon, rangeland)
-caxis([0.5 8.5])
+caxis([0.5 6.5])
 colormap(gca, clr2);
 geoshow(states,'FaceColor','none','EdgeColor',[0.3 0.3 0.3])
 eco_bounds(isnan(eco_bounds)) = 0;
@@ -100,7 +101,7 @@ ax.Position(2) = 0.08;
 cb = colorbar('southoutside');
 cb.Position = [0.03    0.04    0.85    0.03];
 cb.TickLabels = lc;
-cb.FontSize = 8;
+cb.FontSize = 9;
 cb.TickLength = 0;
 
 % bounding box
@@ -110,9 +111,8 @@ plotm(repmat(31, 1, length(-122:0.1:-102.5)), -122:0.1:-102.5, 'k-', 'LineWidth'
 plotm(repmat(39, 1, length(-122:0.1:-102.5)), -122:0.1:-102.5, 'k-', 'LineWidth',2)
 
 % Add labels for ecoregions
-text(-0.0657, 0.7893, 'a', 'HorizontalAlignment','center', 'VerticalAlignment','middle', 'FontSize',16)
 text(-0.0446, 0.6927, 'a', 'HorizontalAlignment','center', 'VerticalAlignment','middle', 'FontSize',16)
-text(0.0324, 0.6741, 'a', 'HorizontalAlignment','center', 'VerticalAlignment','middle', 'FontSize',16)
+text(0.0417, 0.708, 'a', 'HorizontalAlignment','center', 'VerticalAlignment','middle', 'FontSize',16)
 text(-0.0959, 0.6349, 'b', 'HorizontalAlignment','center', 'VerticalAlignment','middle', 'FontSize',16)
 text(0.1128, 0.5619, 'c', 'HorizontalAlignment','center', 'VerticalAlignment','middle', 'FontSize',16)
 text(-0.0102, 0.5878, 'c', 'HorizontalAlignment','center', 'VerticalAlignment','middle', 'FontSize',16)

@@ -21,6 +21,7 @@ GPP_vpd_ens = permute(GPP_vpd_ens, [3 1 2]);
 %% Add EcoRegions 
 load ./data/ecoregions.mat;
 eco_bounds(isnan(GPP_obs) | isnan(eco_bounds)) = 0;
+GPP_obs(eco_bounds==0) = NaN;
 
 %% Initiate table
 T = table('Size',[6 7], 'VariableTypes',{'string','string','string','string','string','string','string'},...
@@ -93,7 +94,7 @@ set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
 set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
 xtickangle(-25)
 title('Cold Deserts', 'FontSize',7)
-annotation('line',[0.22 0.4],[0.8 0.75], 'LineWidth',1);
+annotation('line',[0.22 0.56],[0.8 0.55], 'LineWidth',1);
 annotation('line',[0.22 0.43],[0.8 0.51], 'LineWidth',1);
 
 T.dGPP_SMAP(1) = num2str(round(nanmean(GPP_obs(ecoL2==10.1)), 2));
@@ -293,7 +294,7 @@ T.dGPP_VPD(6) = sprintf('%.2f [%.2f, %.2f]', nanmean(GPP_vpd(ecoL2==12.1)), GPP_
 
 %% Save figure and table
 set(gcf,'PaperPositionMode','auto')
-print('-dpng','-f1','-r300','./output/smap-gpp-regional-attribution.png')
+% print('-dpng','-f1','-r300','./output/smap-gpp-regional-attribution.png')
 print('-dtiff','-f1','-r300','./output/smap-gpp-regional-attribution.tif')
 close all;
 
