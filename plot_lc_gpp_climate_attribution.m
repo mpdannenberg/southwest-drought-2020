@@ -19,13 +19,16 @@ GPP_vpd_ens = permute(GPP_vpd_ens, [3 1 2]);
 
 %% Read in land cover data
 load ./data/rangeland.mat;
-lc = {'Forest','Shrubland','Savanna','Annual','Perennial','Crop (NW)','Crop (SW)','Crop (plains)'};
+rangeland(rangeland == 6) = NaN; % No northwestern croplands
+rangeland(rangeland == 7) = 6; % Reclassify remaining croplands
+rangeland(rangeland == 8) = 7;
+lc = {'Forest','Shrubland','Savanna','Annual','Perennial','Crop (SW)','Crop (plains)'};
 
 %% Add EcoRegions 
 load ./data/ecoregions.mat;
 
 %% Exclude water and LC outside ecoregion bounds
-rangeland(rangeland==0) = NaN;
+rangeland(rangeland==0 | isnan(eco_bounds) | eco_bounds == 0) = NaN;
 
 %% Add bar plots by land cover
 nrows = 3;
@@ -43,7 +46,7 @@ for i = 1:length(lc)
     axes(ax(i))
     
     plot([0 6],[nanmean(GPP_obs(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_obs(rangeland==i & ~isnan(ecoL2)))], 'k-', 'LineWidth',2)
-    if i ~= 4 & i ~= 7
+    if i ~= 4 & i ~= 6
         text(5.75, nanmean(GPP_obs(rangeland==i & ~isnan(ecoL2))), 'SMAP L4C','FontSize',8,'VerticalAlignment','bottom', 'HorizontalAlignment','right')
     else
         text(5.75, nanmean(GPP_obs(rangeland==i & ~isnan(ecoL2))), 'SMAP L4C','FontSize',8,'VerticalAlignment','top', 'HorizontalAlignment','right')
@@ -64,11 +67,6 @@ for i = 1:length(lc)
     plot([3 3], [GPP_sm_ci(1) GPP_sm_ci(2)], '-', 'Color',clr(3,:).^2, 'LineWidth',1.5);
     plot([4 4], [GPP_tair_ci(1) GPP_tair_ci(2)], '-', 'Color',clr(1,:).^2, 'LineWidth',1.5);
     plot([5 5], [GPP_vpd_ci(1) GPP_vpd_ci(2)], '-', 'Color',clr(2,:).^2, 'LineWidth',1.5);
-%     plot([1 1], [nanmean(GPP_all_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_all_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(5,:).^2, 'LineWidth',1.5);
-%     plot([2 2], [nanmean(GPP_par_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_par_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(4,:).^2, 'LineWidth',1.5);
-%     plot([3 3], [nanmean(GPP_sm_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_sm_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(3,:).^2, 'LineWidth',1.5);
-%     plot([4 4], [nanmean(GPP_tair_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_tair_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(1,:).^2, 'LineWidth',1.5);
-%     plot([5 5], [nanmean(GPP_vpd_low(rangeland==i & ~isnan(ecoL2))) nanmean(GPP_vpd_high(rangeland==i & ~isnan(ecoL2)))], '-', 'Color',clr(2,:).^2, 'LineWidth',1.5);
     hold off;
     box off;
     set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
@@ -94,12 +92,16 @@ for i = 1:length(lc)
     
 end
 
+axes(ax(8))
+box off;
+set(gca, 'YColor','w', 'XColor','w', 'Color','none');
+
 axes(ax(9))
 box off;
-set(gca, 'YColor','w', 'XColor','w');
+set(gca, 'YColor','w', 'XColor','w', 'Color','none');
 
 set(gcf,'PaperPositionMode','auto')
-print('-dpng','-f1','-r300','./output/smap-gpp-lc-attribution.png')
+% print('-dpng','-f1','-r300','./output/smap-gpp-lc-attribution.png')
 print('-dtiff','-f1','-r300','./output/smap-gpp-lc-attribution.tif')
 close all;
 
