@@ -99,9 +99,9 @@ Xpcs = Xpcs(:, 1:n);
 
 % Fit main model
 if strcmp(method, 'fitlm')
-    mdl_full = fitlm(Xpcs(trainset,:), y(trainset), modelspec); 
+    mdl_full = fitlm(Xpcs(trainset,:), y(trainset),'linear', 'Upper',modelspec); 
 elseif strcmp(method, 'stepwiselm')
-    mdl_full = stepwiselm(Xpcs(trainset,:), y(trainset),modelspec, 'Criterion','bic', 'Verbose',0); 
+    mdl_full = stepwiselm(Xpcs(trainset,:), y(trainset),'linear', 'Upper',modelspec, 'Criterion','bic', 'Verbose',0); 
 else
     disp('"method" not recognized');
     return
