@@ -137,7 +137,6 @@ end
 
 %% Save figure
 set(gcf,'PaperPositionMode','auto')
-print('-dpng','-f1','-r300','./output/ameriflux-csif-attribution-models.png')
 print('-dtiff','-f1','-r300','./output/ameriflux-csif-attribution-models.tif')
 close all;
 
