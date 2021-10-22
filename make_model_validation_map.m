@@ -71,5 +71,5 @@ h(6).Position(2) = -1;
 text(-2.5,0.45,'R^{2}', 'FontSize',8)
 
 set(gcf,'PaperPositionMode','auto')
-print('-dpng','-f1','-r300','./output/gpp-smap-regional-r2-map.png')
+print('-dtiff','-f1','-r300','./output/gpp-smap-regional-r2-map.tif')
 close all;
