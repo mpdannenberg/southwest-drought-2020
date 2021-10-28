@@ -20,14 +20,13 @@ get_smap_sm_monthly_gridded;
 % model_smap_gpp_climate_attribution;
 
 % Make maps and figures of SMAP GPP anomaly attribution
-map_smap_gpp_climate_attribution_by_ecoregion;
-plot_lc_gpp_climate_attribution;
+map_smap_gpp_climate_anomaly_by_ecoregion;
+plot_ecoregion_lc_gpp_climate_attribution;
 plot_total_gpp_climate_attribution;
 
 % Make supplementary figure showing model validation statistics and annual
 % GPP by ecoregions
 make_model_validation_map;
-map_smap_gpp_average_by_ecoregion;
 
 %% CSIF attribution
 % Get and organize CSIF data
