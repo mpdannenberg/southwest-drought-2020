@@ -135,9 +135,9 @@ axis off;
 axis image;
 flat = [34.4385     (31.8214 + 0.05)    (31.789379 - 0.05)   (34.3349 - 0.05)   (34.3623 + 0.1)    (31.7438 + 0.05)    34.4255     (31.7365 - 0.05)     38.4309];
 flon = [-106.2377   (-110.8661 - 0.05)  (-110.827675 + 0.05) (-106.7442 - 0.05) (-106.702 + 0.05)  (-110.0522 - 0.05)  -105.8615   (-109.9419 + 0.05)   -120.966];
-figbp = [1 1 5 2 5 2 3 5 1];
+figbp = [1 3 5 2 5 2 3 5 3];
 scatterm(flat, flon, 40, figbp, 'filled', 'Marker','^', 'MarkerEdgeColor','k')
-caxis(gca, [0.5 8.5])
+caxis(gca, [0.5 6.5])
 colormap(gca, clr2);
 textm(34.55+0.05, -106.2377, 'Mpj', 'HorizontalAlignment','center',...
     'VerticalAlignment','bottom', 'FontSize',9);
@@ -159,7 +159,6 @@ textm((38.4309 + 0.15), (-120.966 + 0.25), 'Ton', 'HorizontalAlignment','left',.
     'VerticalAlignment','middle', 'FontSize',9);
 
 set(gcf,'PaperPositionMode','auto')
-print('-dpng','-f1','-r300','./output/study-area-lc-towers.png')
 print('-dtiff','-f1','-r300','./output/study-area-lc-towers.tif')
 close all;
 
