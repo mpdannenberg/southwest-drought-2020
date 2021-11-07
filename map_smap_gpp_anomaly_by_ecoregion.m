@@ -4,6 +4,7 @@
 load ./output/smap_gridded_anomaly_attribution;
 latlim = [28 49];
 lonlim = [-125 -100];
+ndays = 31 + 31 + 30 + 31; % Total number of days (for conversion from gC m-2 day-1 to gC m-2)
 
 lat = double(lat);
 lon = double(lon);
@@ -33,8 +34,8 @@ axesm('lambert','MapLatLimit',latlim,'MapLonLimit',lonlim,'grid',...
         'FontSize',8);
 axis off;
 axis image;
-surfm(lat, lon, GPP_obs)
-caxis([-1 1])
+surfm(lat, lon, ndays*GPP_obs)
+caxis([-125 125])
 colormap(gca, clr);
 geoshow(states,'FaceColor','none','EdgeColor',[0.3 0.3 0.3])
 contourm(lat, lon, eco_bounds, 'LineColor',[0.2 0.2 0.2], 'LineWidth',1.2, 'LevelList',0.5:1:6.5);
@@ -43,12 +44,14 @@ ax.Position(1) = 0.11;
 ax.Position(2) = 0.02;
 
 cb = colorbar('northoutside');
-cb.Position = [0.3    0.86    0.4    0.04];
-cb.Ticks = -1:0.1:1;
-cb.TickLabels = {'-1','','-0.8','','-0.6','','-0.4','','-0.2','','0','','0.2','','0.4','','0.6','','0.8','','1'};
+cb.Position = [0.3    0.85    0.4    0.04];
+cb.FontSize = 3;
+cb.TickLabels = [];
+cb.Ticks = -125:12.5:125;
+cb.TickLabels = {'-125','','-100','','-75','','-50','','-25','','0','','25','','50','','75','','100','','125'};
 cb.FontSize = 7;
 cb.TickLength = 0.06;
-xlabel(cb, 'Mean GPP anomaly (g C m^{-2} day^{-1})','FontSize',8)
+xlabel(cb, 'July-October GPP anomaly (g C m^{-2})','FontSize',8)
 
 %% Calculate annual July-October mean GPP
 load ./data/SMAP_L4C_GPP_monthly;
@@ -58,8 +61,7 @@ a = 1;
 gpp = filter(b, a, GPP_monthly, [], 3);
 clear b a windowSize;
 
-% a = 9000 * 9000 * (31 + 31 + 30 + 31) * (1 / 10^12);
-gpp = gpp(:,:,mo==10);
+gpp = ndays*gpp(:,:,mo==10);
 mgpp = mean(gpp(:,:,1:5), 3); mgpp(eco_bounds==0) = NaN;
 
 %% Add plots by ecoregion
@@ -79,12 +81,12 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7)
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
-    'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
-    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
+text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
+    'HorizontalAlignment','right', 'VerticalAlignment','middle',...
+    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',10)
 title('Cold Deserts', 'FontSize',7)
-annotation('line',[0.22 0.56],[0.8 0.55], 'LineWidth',1);
-annotation('line',[0.22 0.43],[0.8 0.51], 'LineWidth',1);
+annotation('line',[0.22 0.56],[0.8 0.55], 'LineWidth',0.5);
+annotation('line',[0.22 0.43],[0.8 0.51], 'LineWidth',0.5);
 
 % Mediterranean California
 h1 = axes('Parent', gcf, 'Position', [0.07 0.4 0.15 0.19]);
@@ -100,12 +102,13 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7)
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
-    'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
-    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
+text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
+    'HorizontalAlignment','right', 'VerticalAlignment','middle',...
+    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',10)
 title('Mediterranean California', 'FontSize',7)
-annotation('line',[0.22 0.34],[0.48 0.39], 'LineWidth',1);
-ylabel('Jul-Oct GPP (g C m^{-2} day^{-1})', 'FontSize',10)
+annotation('line',[0.22 0.34],[0.48 0.39], 'LineWidth',0.5);
+ylb = ylabel('July-October GPP (g C m^{-2})', 'FontSize',9);
+ylb.Position(1) = 2013.6;
 
 % Warm deserts
 h1 = axes('Parent', gcf, 'Position', [0.07 0.08 0.15 0.19]);
@@ -121,12 +124,12 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7)
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
-    'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
-    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
+text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
+    'HorizontalAlignment','right', 'VerticalAlignment','bottom',...
+    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',10)
 title('Warm Deserts', 'FontSize',7)
-annotation('line',[0.22 0.45],[0.16 0.29], 'LineWidth',1);
-annotation('line',[0.22 0.68],[0.16 0.12], 'LineWidth',1);
+annotation('line',[0.22 0.45],[0.16 0.29], 'LineWidth',0.5);
+annotation('line',[0.22 0.68],[0.16 0.12], 'LineWidth',0.5);
 
 % Semiarid prairies
 h1 = axes('Parent', gcf, 'Position', [0.78 0.72 0.15 0.19]);
@@ -142,11 +145,11 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7, 'YAxisLocation','right')
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
-    'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
-    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
+text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
+    'HorizontalAlignment','right', 'VerticalAlignment','bottom',...
+    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',10)
 title('Semiarid prairies', 'FontSize',7)
-annotation('line',[0.78 0.68],[0.78 0.45], 'LineWidth',1);
+annotation('line',[0.78 0.68],[0.78 0.45], 'LineWidth',0.5);
 
 % Upper Gila Mountains
 h1 = axes('Parent', gcf, 'Position', [0.78 0.4 0.15 0.19]);
@@ -162,12 +165,12 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7, 'YAxisLocation','right')
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
-    'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
-    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
+text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
+    'HorizontalAlignment','right', 'VerticalAlignment','middle',...
+    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',10)
 title('Upper Gila Mountains', 'FontSize',7)
-annotation('line',[0.78 0.54],[0.46 0.255], 'LineWidth',1);
-ylabel('Jul-Oct GPP (g C m^{-2} day^{-1})', 'FontSize',10)
+annotation('line',[0.78 0.54],[0.46 0.255], 'LineWidth',0.5);
+ylabel('July-October GPP (g C m^{-2})', 'FontSize',9)
 
 % Sierra Madre Piedmont
 h1 = axes('Parent', gcf, 'Position', [0.78 0.08 0.15 0.19]);
@@ -183,11 +186,11 @@ box off;
 set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7, 'YAxisLocation','right')
 ylim = get(gca, 'YLim');
-text(2015.1, min(ylim), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
-    'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
-    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',11)
+text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
+    'HorizontalAlignment','right', 'VerticalAlignment','bottom',...
+    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',10)
 title('Sierra Madre Piedmont', 'FontSize',7)
-annotation('line',[0.78 0.55],[0.24 0.18], 'LineWidth',1);
+annotation('line',[0.78 0.55],[0.24 0.18], 'LineWidth',0.5);
 
 %% Save figure and table
 set(gcf,'PaperPositionMode','auto')
