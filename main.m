@@ -20,7 +20,7 @@ get_smap_sm_monthly_gridded;
 % model_smap_gpp_climate_attribution;
 
 % Make maps and figures of SMAP GPP anomaly attribution
-map_smap_gpp_climate_anomaly_by_ecoregion;
+map_smap_gpp_anomaly_by_ecoregion;
 plot_ecoregion_lc_gpp_climate_attribution;
 plot_total_gpp_climate_attribution;
 
@@ -46,10 +46,13 @@ read_daily_ameriflux;
 % Attribute observed July-Oct GPP variation to drought variables
 model_ameriflux_gpp_climate_attribution;
 
+%% Supplementary figures
 % Make supplementary figures showing annual Jul-Oct GPP at each site,
-% attribution using SMAP GPP at each site, and sensitivity to variable
-% order
+% attribution using SMAP GPP/CSIF at each site, sensitivity to variable
+% order, and comparison of SMAP and tower anomalies
 plot_ameriflux_annual_gpp;
 model_ameriflux_smap_climate_attribution;
+model_ameriflux_csif_climate_attribution;
 test_sensitivity_variable_order;
+compare_ameriflux_smap_gpp;
 
