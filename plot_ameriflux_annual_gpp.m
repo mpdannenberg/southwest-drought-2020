@@ -3,6 +3,7 @@
 alphabet = 'abcdefghijklmnopqrstuvwxyz';
 syear = 2001;
 eyear = 2020;
+ndays = 31 + 31 + 30 + 31; % Total number of days (for conversion from gC m-2 day-1 to gC m-2)
 yrs = syear:eyear;
 nrows = 9;
 ncols = 1;
@@ -11,7 +12,7 @@ clr = wesanderson('fantasticfox1');
 h = figure('Color','w');
 h.Units = 'inches';
 h.Position = [1 1 4.5 7.5];
-ax = tight_subplot(nrows, ncols, 0.02, [0.05 0.03], [0.1 0.1]);
+ax = tight_subplot(nrows, ncols, 0.02, [0.05 0.03], [0.12 0.1]);
 
 sites = {'US-SRG','US-SRM','US-Wkg','US-Whs','US-Mpj','US-Seg','US-Wjs','US-Ses','US-Ton'};
 n = length(sites);
@@ -25,7 +26,7 @@ for i = 1:n
     for j=1:length(yrs) 
         
         gpp_temp = T.GPP(T.Year==yrs(j) & T.Month>=7 & T.Month<=10); 
-        GPP_total(j) = mean(gpp_temp); 
+        GPP_total(j) = ndays * mean(gpp_temp); 
         
     end
     
@@ -46,8 +47,8 @@ for i = 1:n
     end
     
     if i == median([1 n])
-        yl = ylabel('Jul-Oct GPP (g C m^{-1} day^{-1})', 'FontSize',10);
-        yl.Position(1) = yl.Position(1)-0.01;
+        yl = ylabel('July-October GPP (g C m^{-2})', 'FontSize',10);
+        yl.Position(1) = yl.Position(1)-0.2;
     end
     
     ylim = get(gca,'YLim');
@@ -58,7 +59,7 @@ for i = 1:n
     ylim = get(gca,'YLim');
     
     text(syear+0.2, ylim(2), ['\bf',alphabet(i),')\rm ', sites{i}],...
-        'FontSize',11, 'FontWeight','bold','VerticalAlignment','top')
+        'FontSize',10, 'FontWeight','bold','VerticalAlignment','top')
     text(2020.4, GPP_total(yrs==2020),...
         [num2str(100*round(GPP_total(yrs==2020)/mean(GPP_total(yrs>=2015 & yrs<=2019)), 2)),'%'],...
         'HorizontalAlignment','left', 'VerticalAlignment','middle',...
@@ -68,6 +69,5 @@ end
 
 % Save figure
 set(gcf,'PaperPositionMode','auto')
-print('-dpng','-f1','-r300','./output/ameriflux-annual-gpp.png')
 print('-dtiff','-f1','-r300','./output/ameriflux-annual-gpp.tif')
 close all;
