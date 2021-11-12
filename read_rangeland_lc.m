@@ -17,9 +17,9 @@ clear ag pg sh tr;
 
 %% Get croplands from MODIS LC
 load ./data/mcd12c1;
-rangeland(biome==5 & repmat(lon',length(lat),1) <= -110 & repmat(lat,1,length(lon))>42) = 6;
-rangeland(biome==5 & repmat(lon',length(lat),1) <= -110 & repmat(lat,1,length(lon))<=42) = 7;
-rangeland(biome==5 & repmat(lon',length(lat),1) > -110) = 8;
+rangeland(biome==5) = 6; % all crops
+rangeland(biome==5 & repmat(lon',length(lat),1) <= -118 & repmat(lat,1,length(lon))<=40 & repmat(lat,1,length(lon))>=34) = 7; % central valley
+rangeland(biome==5 & repmat(lon',length(lat),1) > -110) = 8; % great plains
 rangeland(biome==0) = NaN;
 
 save('./data/rangeland.mat', 'rangeland');

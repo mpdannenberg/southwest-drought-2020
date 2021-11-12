@@ -274,7 +274,7 @@ load ./data/rangeland.mat;
 rangeland(rangeland == 6) = NaN; % No northwestern croplands
 rangeland(rangeland == 7) = 6; % Reclassify remaining croplands
 rangeland(rangeland == 8) = 7;
-lc = {'Forest','Shrubland','Savanna','Annual','Perennial','Crop (SW)','Crop (plains)'};
+lc = {'Forest','Shrubland','Savanna','Annual','Perennial','Crop (Central Valley)','Crop (Great Plains)'};
 
 %% Exclude water and LC outside ecoregion bounds
 rangeland(rangeland==0 | isnan(eco_bounds) | eco_bounds == 0) = NaN;
