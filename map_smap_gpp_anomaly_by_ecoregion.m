@@ -52,6 +52,7 @@ cb.TickLabels = {'-125','','-100','','-75','','-50','','-25','','0','','25','','
 cb.FontSize = 7;
 cb.TickLength = 0.06;
 xlabel(cb, 'July-October GPP anomaly (g C m^{-2})','FontSize',8)
+text(-0.14,0.82,'a', 'FontSize',12, 'FontWeight','bold')
 
 %% Calculate annual July-October mean GPP
 load ./data/SMAP_L4C_GPP_monthly;
@@ -87,6 +88,7 @@ text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)),
 title('Cold Deserts', 'FontSize',7)
 annotation('line',[0.22 0.56],[0.8 0.55], 'LineWidth',0.5);
 annotation('line',[0.22 0.43],[0.8 0.51], 'LineWidth',0.5);
+text(2015.1,ylim(1),'b', 'FontSize',12, 'FontWeight','bold', 'VerticalAlignment','bottom')
 
 % Mediterranean California
 h1 = axes('Parent', gcf, 'Position', [0.07 0.4 0.15 0.19]);
@@ -109,6 +111,7 @@ title('Mediterranean California', 'FontSize',7)
 annotation('line',[0.22 0.34],[0.48 0.39], 'LineWidth',0.5);
 ylb = ylabel('July-October GPP (g C m^{-2})', 'FontSize',9);
 ylb.Position(1) = 2013.6;
+text(2015.1,ylim(1),'c', 'FontSize',12, 'FontWeight','bold', 'VerticalAlignment','bottom')
 
 % Warm deserts
 h1 = axes('Parent', gcf, 'Position', [0.07 0.08 0.15 0.19]);
@@ -130,6 +133,7 @@ text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)),
 title('Warm Deserts', 'FontSize',7)
 annotation('line',[0.22 0.45],[0.16 0.29], 'LineWidth',0.5);
 annotation('line',[0.22 0.68],[0.16 0.12], 'LineWidth',0.5);
+text(2015.1,ylim(1),'d', 'FontSize',12, 'FontWeight','bold', 'VerticalAlignment','bottom')
 
 % Semiarid prairies
 h1 = axes('Parent', gcf, 'Position', [0.78 0.72 0.15 0.19]);
@@ -150,6 +154,7 @@ text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)),
     'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',10)
 title('Semiarid prairies', 'FontSize',7)
 annotation('line',[0.78 0.68],[0.78 0.45], 'LineWidth',0.5);
+text(2015.1,ylim(1),'e', 'FontSize',12, 'FontWeight','bold', 'VerticalAlignment','bottom')
 
 % Upper Gila Mountains
 h1 = axes('Parent', gcf, 'Position', [0.78 0.4 0.15 0.19]);
@@ -171,6 +176,7 @@ text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)),
 title('Upper Gila Mountains', 'FontSize',7)
 annotation('line',[0.78 0.54],[0.46 0.255], 'LineWidth',0.5);
 ylabel('July-October GPP (g C m^{-2})', 'FontSize',9)
+text(2015.1,ylim(1),'f', 'FontSize',12, 'FontWeight','bold', 'VerticalAlignment','bottom')
 
 % Sierra Madre Piedmont
 h1 = axes('Parent', gcf, 'Position', [0.78 0.08 0.15 0.19]);
@@ -191,6 +197,7 @@ text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)),
     'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',10)
 title('Sierra Madre Piedmont', 'FontSize',7)
 annotation('line',[0.78 0.55],[0.24 0.18], 'LineWidth',0.5);
+text(2015.1,ylim(1),'g', 'FontSize',12, 'FontWeight','bold', 'VerticalAlignment','bottom')
 
 %% Save figure and table
 set(gcf,'PaperPositionMode','auto')
