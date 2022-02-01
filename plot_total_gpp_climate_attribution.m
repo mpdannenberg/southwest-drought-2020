@@ -53,7 +53,9 @@ yl = ylabel('Jul-Oct GPP (Tg C)', 'FontSize',9);
 yl.Position(1) = yl.Position(1)-0.05;
 ylim = get(gca,'YLim');
 text(2015.1, ylim(2), 'a', 'FontSize',12, 'FontWeight','bold','VerticalAlignment','bottom')
-
+text(2020.1, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
+    'HorizontalAlignment','left', 'VerticalAlignment','bottom',...
+    'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',12)
 
 % Attribution
 subplot(3,1,[2 3])
