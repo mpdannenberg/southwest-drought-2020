@@ -21,6 +21,7 @@ GPP_vpd_ens = permute(GPP_vpd_ens, [3 1 2]);
 %% Add EcoRegions 
 load ./data/ecoregions.mat;
 eco_bounds(isnan(GPP_obs)) = 0;
+ecoL2(isnan(GPP_obs)) = NaN;
 
 %% Make overall drought figure
 h = figure('Color','w');
