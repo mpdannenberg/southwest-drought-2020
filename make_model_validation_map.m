@@ -124,8 +124,7 @@ set(a(19:24), 'MarkerEdgeColor', 'k', 'MarkerSize',5);   % Set the whisker color
 % hg = histogram(, 0:0.1:0.8,...
 %     'Normalization','probability', 'FaceColor',clr(5,:),'FaceAlpha',1);
 box off;
-% set(gca, 'FontSize',8, 'YColor','k', 'TickDir','out', 'TickLength',[0.03 0],...
-%     'XTickLabels',{'Semiarid Prairies','Cold Desert','Warm Desert','Mediterranean CA','Sierra Madre Piedmont','Upper Gila Mtns.'})
+set(gca, 'FontSize',8, 'YColor','k', 'TickDir','out', 'TickLength',[0.03 0])
 h = findobj(gca, 'type', 'text');
 set(h, 'FontSize', 8, 'HorizontalAlignment','right');
 h(1).Position(2) = -1;
