@@ -115,6 +115,8 @@ for i = 1:n
     
     ylim = get(gca, 'YLim');
     text(0.4, ylim(2), [alphabet(i),') ', sites{i}], 'VerticalAlignment','top', 'FontWeight','bold')
+    text(5.6, ylim(2), ['R^{2} = ', sprintf('%.2f', mean(SRMstats.R2_Validation, 'omitnan'))],...
+        'VerticalAlignment','top', 'HorizontalAlignment','right', 'FontSize',8)
     
     if i > (nrows-1)*ncols
         set(gca, 'XTickLabel',{'All','PAR','SM','T_{air}','VPD'})
