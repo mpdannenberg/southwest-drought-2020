@@ -51,8 +51,10 @@ model_ameriflux_gpp_climate_attribution;
 % attribution using SMAP GPP/CSIF at each site, sensitivity to variable
 % order, and comparison of SMAP and tower anomalies
 plot_ameriflux_annual_gpp;
+plot_lc_annual_gpp;
 model_ameriflux_smap_climate_attribution;
 model_ameriflux_csif_climate_attribution;
 test_sensitivity_variable_order;
 compare_ameriflux_smap_gpp;
+map_smap_gridded_gpp_climate_attribution;
 
