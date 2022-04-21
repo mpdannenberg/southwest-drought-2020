@@ -15,6 +15,7 @@ states = shaperead('usastatehi','UseGeoCoords',true);
 load ./data/ecoregions.mat;
 eco_bounds(isnan(GPP_obs) | isnan(eco_bounds)) = 0;
 GPP_obs(eco_bounds==0) = NaN;
+ecoL2(isnan(GPP_obs)) = NaN;
 
 %% Map
 clr = wesanderson('fantasticfox1');
@@ -105,7 +106,7 @@ set(gca, 'TickDir','out', 'TickLength',[0.02 0],...
         'XLim',[2015 2020], 'FontSize',7)
 ylim = get(gca, 'YLim');
 text(2019.8, GPP_total(6), [num2str(100*round(GPP_total(6)/mean(GPP_total(1:5)), 2)),'%'],...
-    'HorizontalAlignment','right', 'VerticalAlignment','middle',...
+    'HorizontalAlignment','right', 'VerticalAlignment','bottom',...
     'Color',clr(2,:).^2, 'FontWeight','bold', 'FontSize',10)
 title('Mediterranean California', 'FontSize',7)
 annotation('line',[0.22 0.34],[0.48 0.39], 'LineWidth',0.5);
